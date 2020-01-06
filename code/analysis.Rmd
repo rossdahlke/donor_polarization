@@ -1,0 +1,186 @@
+---
+title: "1. Data"
+author: "Ross Dahlke"
+date: "1/5/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(infer)
+library(igraph)
+```
+
+# Read in Data
+
+```{r}
+donations <- readRDS("../data/wi_donations.RDA") %>% 
+  mutate(source = str_to_lower(str_replace(source, "[[:punct:]]", " ")),
+         election_year =  as.character(election_year)) %>% 
+  filter(str_detect(source, c("unitemized|anonymous")) == F) %>% 
+  mutate(zip_5 = str_sub(zip, 1, 5),
+         refined_source = refinr::n_gram_merge(refinr::key_collision_merge(source)),
+         refined_source_zip = paste0(refined_source," : ",zip_5)) 
+
+
+filtered_donations <- donations %>% 
+  group_by(election_year, refined_source_zip) %>% 
+  mutate(source_count = n()) %>% 
+  filter(source_count > 1) %>% 
+  group_by(election_year, target) %>% 
+  mutate(target_count = n()) %>% 
+  filter(target_count > 20) %>% 
+  ungroup()
+```
+
+# Donor Polarization Analysis
+
+## Donor Summarization
+
+```{r}
+by_donor <- filtered_donations %>% 
+  filter(party != "other") %>% 
+  group_by(election_year, refined_source_zip, party) %>% 
+  summarize(contribution = sum(contribution)) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = party, 
+              values_from = contribution) %>% 
+  mutate(rep = replace_na(rep, 0),
+         dem = replace_na(dem, 0),
+         total_contributions = rep + dem,
+         per_rep = rep / total_contributions,
+         partisanship = scales::rescale(per_rep, to = c(-1, 1)),
+         abs_partisanship = abs(partisanship),
+         party_bin = case_when(
+           per_rep < .25 ~ "democrat",
+           per_rep >= .25 & per_rep <= .75 ~ "bipartisan",
+           per_rep > .75 ~ "republican"
+         ))
+
+```
+
+```{r}
+diff_boostrap <- function(year_1 = "2014",
+                          year_2 = "2012",
+                          replications = 100) {
+  year_1 = as.character(year_1)
+  year_2 = as.character(year_2)
+  
+  print(year_1)
+  print(year_2)
+  
+  bootstrap <- by_donor %>% 
+    filter(election_year %in% c(year_1, year_2)) %>% 
+    specify(abs_partisanship ~ election_year) %>% 
+    generate(reps = replications, type = "bootstrap") %>% 
+    calculate(stat = "diff in means", order = c(year_1, year_2))
+  
+
+  bootstrap %>% 
+    get_ci() %>% 
+    cbind(bootstrap %>% 
+            summarize(mean_diff = mean(stat))) %>% 
+    cbind(bootstrap %>% 
+            get_p_value(obs_stat = 0, direction = "two_sided"))
+  
+
+                          }
+```
+
+```{r}
+election_years <- by_donor %>% 
+  distinct(election_year) %>% 
+  pull()
+```
+
+```{r}
+diff_boostrap(year_1 = "2012",
+              year_2 = "2010")
+```
+
+
+```{r}
+election_years_expanded <- expand.grid(year1 = as.character(election_years),
+            year2 = as.character(election_years)) %>% 
+  filter(year1 != year2 & 
+           as.numeric(year1) > as.numeric(year2) & 
+           (as.numeric(year1) - as.numeric(year2) < 2)) %>% 
+  ungroup() 
+
+partisanship_diff_results <- cbind(election_years_expanded, 
+                                   Map(diff_boostrap, 
+                                       election_years_expanded$year1, 
+                                       election_years_expanded$year2, 
+                                       1000) %>% 
+                                     tibble() %>% 
+                                     unnest())
+
+
+```
+
+
+# Network Distance
+
+```{r}
+donations %>% 
+  filter(election_year == "2010") %>% 
+  select(refined_source_zip, target, contribution) %>% 
+  graph_from_data_frame() %>% 
+  mean_distance(unconnected = F)
+```
+
+```{r}
+modularity_calc <- function(year =  "2010"){
+  nodes_w_party <- by_donor %>% 
+  filter(election_year == year) %>% 
+  select(refined_source_zip, party_bin) %>% 
+  rename(node = refined_source_zip,
+         party = party_bin) %>% 
+  rbind(donations %>% 
+  distinct(target, party) %>% 
+  filter(party != "other") %>% 
+    rename(node = target) %>% 
+    mutate(party  = case_when(
+      party == "rep" ~ "republican",
+      party == "dem" ~ "democrat"
+    ))) %>% 
+  distinct(node, party) %>% 
+  mutate(party_num = case_when(
+    party == "democrat" ~ 1,
+    party == "bipartisan" ~ 2,
+    party == "republican" ~ 3
+  ))
+  
+
+filtered_donations %>%
+  filter(election_year == year & party != "other") %>% 
+  select(refined_source_zip, target, contribution) %>% 
+  graph_from_data_frame(vertices = nodes_w_party) %>% 
+  modularity(nodes_w_party$party_num)
+}
+
+```
+
+```{r}
+modularity_calc("2014")
+```
+
+# Modularity calculations
+
+```{r}
+tibble(election_years) %>% 
+  group_by(election_years) %>% 
+  mutate(modularity = modularity_calc(election_years))
+```
+
+
+
+
+
+
+
+
+
+
+
