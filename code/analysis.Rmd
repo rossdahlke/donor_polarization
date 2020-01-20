@@ -1,8 +1,25 @@
 ---
-title: "1. Data"
-author: "Ross Dahlke"
-date: "1/5/2020"
-output: html_document
+output:
+  pdf_document:
+    citation_package: natbib
+    keep_tex: true
+    fig_caption: true
+    latex_engine: pdflatex
+    template: ../svm-latex-ms.tex
+title: "Political Donor Polarization in Wisconsin"
+thanks: "Code and data available at: github.com/Rdahlke"
+author:
+- name: Ross Dahlke
+affiliation: University of Wisconsin-Madison
+abstract: "Since the 2012 recall election of Governor Scott Walker, political polarization in Wisconsin has become a major topic of research. Research on Wisconsin’s politics has shown that there is mass polarization in Wisconsin’s electorate. However, there is little research done on polarization of political donors and the policy implications of donor polarization. This study intends to fill this research gap by studying networks of political donors in Wisconsin. I use data from the Wisconsin Campaign Finance Information System, Wisconsin’s official campaign finance database, to create network analyses of donors to candidates for Wisconsin’s state-wide and state-legislative races. Through network analysis, this study found that political donor networks have become more polarized since the 2012 recall elections. This conclusion that donor networks—the people who are funding the state’s elections—have recently become more polarized provides context for the mass polarization of Wisconsin’s electorate."
+keywords: "state politics, political donations, network analysis, polarization"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+geometry: margin=1in
+fontfamily: mathpazo
+fontsize: 11pt
+# spacing: double
+bibliography: "`r paste0(Sys.getenv('HOME'),'/Dropbox/master.bib')`"
+biblio-style: apsr
 ---
 
 ```{r setup, include=FALSE}
@@ -12,19 +29,27 @@ library(infer)
 library(igraph)
 ```
 
-# Read in Data
+# Methodology
+
+All data on political contributions came from the Wisconsin Campaign Finance Information System (CFIS). I exported all contributions to State Assembly, State Senate, and Gubernatorial races from the 2010, 2012, and 2014 elections. This dataset does not include donations to party committees, although it does include disbursements from these committees. I manually created a table of the parties of each of all the campaigns receiving contributions in this timeframe and added the party of the campaign receiving the donation to this dataset.
 
 ```{r}
 donations <- readRDS("../data/wi_donations.RDA") %>% 
   mutate(source = str_to_lower(str_replace(source, "[[:punct:]]", " ")),
-         election_year =  as.character(election_year)) %>% 
+         election_year =  as.character(election_year)) 
+
+anon_donations_n <- donations %>% 
+  filter(str_detect(source, c("unitemized|anonymous")) == T) %>% 
+  count() %>% 
+  pull()
+
+donations_2 <- donations %>% 
   filter(str_detect(source, c("unitemized|anonymous")) == F) %>% 
   mutate(zip_5 = str_sub(zip, 1, 5),
          refined_source = refinr::n_gram_merge(refinr::key_collision_merge(source)),
          refined_source_zip = paste0(refined_source," : ",zip_5)) 
 
-
-filtered_donations <- donations %>% 
+filtered_donations <- donations_2 %>% 
   group_by(election_year, refined_source_zip) %>% 
   mutate(source_count = n()) %>% 
   filter(source_count > 1) %>% 
@@ -34,9 +59,9 @@ filtered_donations <- donations %>%
   ungroup()
 ```
 
-# Donor Polarization Analysis
+I started with ___ donations. To clean the data, I filtered out unitemized/ anonymous donations, removed punctuation from the names of the donors, and used Open Refine via the `refiner` R package to standardize names (for example, Jim versus James). Next, I created a unique identifier for donors by combining their standardized name with their zip code. This identifier was created to be able to link donors who contributed across multiple campaigns in multiple years without considering two different people, with the same name, from different locations to be the same person.
 
-## Donor Summarization
+Next, I derived the partisanship of each donor in each election cycle. I calculated each donor's partisanship by taking the percent of donations that each donor gave to Republicans divided by their donations to Republicans and Democrats. I took that "percent donated to Republicans" and rescaled it from -1 to 1, where -1 represents the most Democratic donors, and 1 the most Republican donors. I also calculated each individual's party bin: if more than 75% of donations were to Democrats, they were labeled as a Democrat; if more than 75% of donations were to Republicans, they were labeled as a Republican; if their donations were somewhere inbetween, they were labeled as being a bipartisan donor.
 
 ```{r}
 by_donor <- filtered_donations %>% 
@@ -59,6 +84,62 @@ by_donor <- filtered_donations %>%
          ))
 
 ```
+
+To quantify the levels of polarization in each election cycle, I calculated two statistics: network modularity and average absolute partisanship of donors.
+
+First, political donations can be thought of as a network where donors and candidates are nodes and donations connecting donors and candidates are edges. This conceptualization of the political donor landscape as network allows us to examine the network structure and calculate network statistics on the graph of donors and candidates. One of the most useful network statistics for measuring polarization in a network's modularity.
+
+The modularity of a graph measures how good the division of groups (such as political parties) is by calculating "the number of edges falling within groups minus the expected number in an equivalent network with edges placed at random" (https://www.pnas.org/content/103/23/8577). The modularity of a network falls in range [need latex] [-1/2, 1]. If the modularity is positive, the number of edges that remain within each group is greater than the expected number to remain in-group based on chance. The higher the modularity, the greater the concentration of edges within each groups. In other words, the higher the modularity of a network, the higher the polarization among the groups.
+
+I calculated the modularity of the network graphs of each election cycle (2010, 2012, 2014). I used candidates' declared parties and donors' party bin as the groups for the modularity calculation. The modularity of the network graph of each election is in Table 1.
+
+```{r}
+modularity_calc <- function(year =  "2010"){
+  nodes_w_party <- by_donor %>% 
+  filter(election_year == year) %>% 
+  select(refined_source_zip, party_bin) %>% 
+  rename(node = refined_source_zip,
+         party = party_bin) %>% 
+  rbind(donations_2 %>% 
+  distinct(target, party) %>% 
+  filter(party != "other") %>% 
+    rename(node = target) %>% 
+    mutate(party  = case_when(
+      party == "rep" ~ "republican",
+      party == "dem" ~ "democrat"
+    ))) %>% 
+  distinct(node, party) %>% 
+  mutate(party_num = case_when(
+    party == "democrat" ~ 1,
+    party == "bipartisan" ~ 2,
+    party == "republican" ~ 3
+  ))
+  
+
+filtered_donations %>%
+  filter(election_year == year & party != "other") %>% 
+  select(refined_source_zip, target, contribution) %>% 
+  graph_from_data_frame(vertices = nodes_w_party) %>% 
+  modularity(nodes_w_party$party_num)
+}
+
+```
+
+```{r}
+election_years <- by_donor %>% 
+  distinct(election_year) %>% 
+  pull()
+```
+
+```{r}
+tibble(election_years) %>% 
+  group_by(election_years) %>% 
+  mutate(modularity = modularity_calc(election_years))
+```
+
+In addition to calculating the change in modularity of each of the election cycles, I also analyzed the change in mean absolute partisanship of the donors in each election cycle. 
+
+I defined a donor's absolute partisanship as the absolute value of their partisanship score (which is on a scale from -1 to 1). Therefore, the larger a donor's absolute the partisanship, the higher percentage of their money that they contributed to a single party. To calculate the significance in the difference of the mean absolute partisanship, I use a bootstrap methodology with 1000 replications. The results of the bootstrap are found in Table 2.
 
 ```{r}
 diff_boostrap <- function(year_1 = "2014",
@@ -88,17 +169,6 @@ diff_boostrap <- function(year_1 = "2014",
                           }
 ```
 
-```{r}
-election_years <- by_donor %>% 
-  distinct(election_year) %>% 
-  pull()
-```
-
-```{r}
-diff_boostrap(year_1 = "2012",
-              year_2 = "2010")
-```
-
 
 ```{r}
 election_years_expanded <- expand.grid(year1 = as.character(election_years),
@@ -120,59 +190,7 @@ partisanship_diff_results <- cbind(election_years_expanded,
 ```
 
 
-# Network Distance
 
-```{r}
-donations %>% 
-  filter(election_year == "2010") %>% 
-  select(refined_source_zip, target, contribution) %>% 
-  graph_from_data_frame() %>% 
-  mean_distance(unconnected = F)
-```
-
-```{r}
-modularity_calc <- function(year =  "2010"){
-  nodes_w_party <- by_donor %>% 
-  filter(election_year == year) %>% 
-  select(refined_source_zip, party_bin) %>% 
-  rename(node = refined_source_zip,
-         party = party_bin) %>% 
-  rbind(donations %>% 
-  distinct(target, party) %>% 
-  filter(party != "other") %>% 
-    rename(node = target) %>% 
-    mutate(party  = case_when(
-      party == "rep" ~ "republican",
-      party == "dem" ~ "democrat"
-    ))) %>% 
-  distinct(node, party) %>% 
-  mutate(party_num = case_when(
-    party == "democrat" ~ 1,
-    party == "bipartisan" ~ 2,
-    party == "republican" ~ 3
-  ))
-  
-
-filtered_donations %>%
-  filter(election_year == year & party != "other") %>% 
-  select(refined_source_zip, target, contribution) %>% 
-  graph_from_data_frame(vertices = nodes_w_party) %>% 
-  modularity(nodes_w_party$party_num)
-}
-
-```
-
-```{r}
-modularity_calc("2014")
-```
-
-# Modularity calculations
-
-```{r}
-tibble(election_years) %>% 
-  group_by(election_years) %>% 
-  mutate(modularity = modularity_calc(election_years))
-```
 
 
 

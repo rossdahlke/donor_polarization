@@ -1,0 +1,485 @@
+\documentclass[11pt,]{article}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in]{geometry}
+\newcommand*{\authorfont}{\fontfamily{phv}\selectfont}
+\usepackage[]{mathpazo}
+
+
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+
+
+
+
+\usepackage{abstract}
+\renewcommand{\abstractname}{}    % clear the title
+\renewcommand{\absnamepos}{empty} % originally center
+
+\renewenvironment{abstract}
+ {{%
+    \setlength{\leftmargin}{0mm}
+    \setlength{\rightmargin}{\leftmargin}%
+  }%
+  \relax}
+ {\endlist}
+
+\makeatletter
+\def\@maketitle{%
+  \newpage
+%  \null
+%  \vskip 2em%
+%  \begin{center}%
+  \let \footnote \thanks
+    {\fontsize{18}{20}\selectfont\raggedright  \setlength{\parindent}{0pt} \@title \par}%
+}
+%\fi
+\makeatother
+
+
+
+
+\setcounter{secnumdepth}{0}
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+
+
+
+\title{Political Donor Polarization in Wisconsin \thanks{Code and data available at: github.com/Rdahlke}  }
+
+
+
+\author{\Large Ross Dahlke\vspace{0.05in} \newline\normalsize\emph{}  }
+
+
+\date{}
+
+\usepackage{titlesec}
+
+\titleformat*{\section}{\normalsize\bfseries}
+\titleformat*{\subsection}{\normalsize\itshape}
+\titleformat*{\subsubsection}{\normalsize\itshape}
+\titleformat*{\paragraph}{\normalsize\itshape}
+\titleformat*{\subparagraph}{\normalsize\itshape}
+
+
+\usepackage{natbib}
+\bibliographystyle{apsr}
+\usepackage[strings]{underscore} % protect underscores in most circumstances
+
+
+
+\newtheorem{hypothesis}{Hypothesis}
+\usepackage{setspace}
+
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+
+% move the hyperref stuff down here, after header-includes, to allow for - \usepackage{hyperref}
+
+\makeatletter
+\@ifpackageloaded{hyperref}{}{%
+\ifxetex
+  \PassOptionsToPackage{hyphens}{url}\usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \PassOptionsToPackage{hyphens}{url}\usepackage[draft,unicode=true]{hyperref}
+\fi
+}
+
+\@ifpackageloaded{color}{
+    \PassOptionsToPackage{usenames,dvipsnames}{color}
+}{%
+    \usepackage[usenames,dvipsnames]{color}
+}
+\makeatother
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={Ross Dahlke ()},
+             pdfkeywords = {state politics, political donations, network analysis, polarization},  
+            pdftitle={Political Donor Polarization in Wisconsin},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+
+% Add an option for endnotes. -----
+
+
+% add tightlist ----------
+\providecommand{\tightlist}{%
+\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% add some other packages ----------
+
+% \usepackage{multicol}
+% This should regulate where figures float
+% See: https://tex.stackexchange.com/questions/2275/keeping-tables-figures-close-to-where-they-are-mentioned
+\usepackage[section]{placeins}
+
+
+\begin{document}
+	
+% \pagenumbering{arabic}% resets `page` counter to 1 
+%
+% \maketitle
+
+{% \usefont{T1}{pnc}{m}{n}
+\setlength{\parindent}{0pt}
+\thispagestyle{plain}
+{\fontsize{18}{20}\selectfont\raggedright 
+\maketitle  % title \par  
+
+}
+
+{
+   \vskip 13.5pt\relax \normalsize\fontsize{11}{12} 
+\textbf{\authorfont Ross Dahlke} \hskip 15pt \emph{\small }   
+
+}
+
+}
+
+
+
+
+
+
+
+
+\begin{abstract}
+
+    \hbox{\vrule height .2pt width 39.14pc}
+
+    \vskip 8.5pt % \small 
+
+\noindent Since the 2012 recall election of Governor Scott Walker, political
+polarization in Wisconsin has become a major topic of research. Research
+on Wisconsin's politics has shown that there is mass polarization in
+Wisconsin's electorate. However, there is little research done on
+polarization of political donors and the policy implications of donor
+polarization. This study intends to fill this research gap by studying
+networks of political donors in Wisconsin. I use data from the Wisconsin
+Campaign Finance Information System, Wisconsin's official campaign
+finance database, to create network analyses of donors to candidates for
+Wisconsin's state-wide and state-legislative races. Through network
+analysis, this study found that political donor networks have become
+more polarized since the 2012 recall elections. This conclusion that
+donor networks---the people who are funding the state's elections---have
+recently become more polarized provides context for the mass
+polarization of Wisconsin's electorate.
+
+
+\vskip 8.5pt \noindent \emph{Keywords}: state politics, political donations, network analysis, polarization \par
+
+    \hbox{\vrule height .2pt width 39.14pc}
+
+
+
+\end{abstract}
+
+
+\vskip -8.5pt
+
+
+ % removetitleabstract
+
+\noindent  
+
+\section{Methodology}\label{methodology}
+
+All data on political contributions came from the Wisconsin Campaign
+Finance Information System (CFIS). I exported all contributions to State
+Assembly, State Senate, and Gubernatorial races from the 2010, 2012, and
+2014 elections. This dataset does not include donations to party
+committees, although it does include disbursements from these
+committees. I manually created a table of the parties of each of all the
+campaigns receiving contributions in this timeframe and added the party
+of the campaign receiving the donation to this dataset.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{donations <-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{"../data/wi_donations.RDA"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{source =} \KeywordTok{str_to_lower}\NormalTok{(}\KeywordTok{str_replace}\NormalTok{(source, }\StringTok{"[[:punct:]]"}\NormalTok{, }\StringTok{" "}\NormalTok{)),}
+         \DataTypeTok{election_year =}  \KeywordTok{as.character}\NormalTok{(election_year)) }
+
+\NormalTok{anon_donations_n <-}\StringTok{ }\NormalTok{donations }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\KeywordTok{str_detect}\NormalTok{(source, }\KeywordTok{c}\NormalTok{(}\StringTok{"unitemized|anonymous"}\NormalTok{)) }\OperatorTok{==}\StringTok{ }\NormalTok{T) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{count}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{pull}\NormalTok{()}
+
+\NormalTok{donations_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\NormalTok{donations }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\KeywordTok{str_detect}\NormalTok{(source, }\KeywordTok{c}\NormalTok{(}\StringTok{"unitemized|anonymous"}\NormalTok{)) }\OperatorTok{==}\StringTok{ }\NormalTok{F) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{zip_5 =} \KeywordTok{str_sub}\NormalTok{(zip, }\DecValTok{1}\NormalTok{, }\DecValTok{5}\NormalTok{),}
+         \DataTypeTok{refined_source =}\NormalTok{ refinr}\OperatorTok{::}\KeywordTok{n_gram_merge}\NormalTok{(refinr}\OperatorTok{::}\KeywordTok{key_collision_merge}\NormalTok{(source)),}
+         \DataTypeTok{refined_source_zip =} \KeywordTok{paste0}\NormalTok{(refined_source,}\StringTok{" : "}\NormalTok{,zip_}\DecValTok{5}\NormalTok{)) }
+
+\NormalTok{filtered_donations <-}\StringTok{ }\NormalTok{donations_}\DecValTok{2} \OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(election_year, refined_source_zip) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{source_count =} \KeywordTok{n}\NormalTok{()) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(source_count }\OperatorTok{>}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(election_year, target) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{target_count =} \KeywordTok{n}\NormalTok{()) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(target_count }\OperatorTok{>}\StringTok{ }\DecValTok{20}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+I started with \_\_\_ donations. To clean the data, I filtered out
+unitemized/ anonymous donations, removed punctuation from the names of
+the donors, and used Open Refine via the \texttt{refiner} R package to
+standardize names (for example, Jim versus James). Next, I created a
+unique identifier for donors by combining their standardized name with
+their zip code. This identifier was created to be able to link donors
+who contributed across multiple campaigns in multiple years without
+considering two different people, with the same name, from different
+locations to be the same person.
+
+Next, I derived the partisanship of each donor in each election cycle. I
+calculated each donor's partisanship by taking the percent of donations
+that each donor gave to Republicans divided by their donations to
+Republicans and Democrats. I took that ``percent donated to
+Republicans'' and rescaled it from -1 to 1, where -1 represents the most
+Democratic donors, and 1 the most Republican donors. I also calculated
+each individual's party bin: if more than 75\% of donations were to
+Democrats, they were labeled as a Democrat; if more than 75\% of
+donations were to Republicans, they were labeled as a Republican; if
+their donations were somewhere inbetween, they were labeled as being a
+bipartisan donor.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{by_donor <-}\StringTok{ }\NormalTok{filtered_donations }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(party }\OperatorTok{!=}\StringTok{ "other"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(election_year, refined_source_zip, party) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{contribution =} \KeywordTok{sum}\NormalTok{(contribution)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{pivot_wider}\NormalTok{(}\DataTypeTok{names_from =}\NormalTok{ party, }
+              \DataTypeTok{values_from =}\NormalTok{ contribution) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{rep =} \KeywordTok{replace_na}\NormalTok{(rep, }\DecValTok{0}\NormalTok{),}
+         \DataTypeTok{dem =} \KeywordTok{replace_na}\NormalTok{(dem, }\DecValTok{0}\NormalTok{),}
+         \DataTypeTok{total_contributions =}\NormalTok{ rep }\OperatorTok{+}\StringTok{ }\NormalTok{dem,}
+         \DataTypeTok{per_rep =}\NormalTok{ rep }\OperatorTok{/}\StringTok{ }\NormalTok{total_contributions,}
+         \DataTypeTok{partisanship =}\NormalTok{ scales}\OperatorTok{::}\KeywordTok{rescale}\NormalTok{(per_rep, }\DataTypeTok{to =} \KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{)),}
+         \DataTypeTok{abs_partisanship =} \KeywordTok{abs}\NormalTok{(partisanship),}
+         \DataTypeTok{party_bin =} \KeywordTok{case_when}\NormalTok{(}
+\NormalTok{           per_rep }\OperatorTok{<}\StringTok{ }\NormalTok{.}\DecValTok{25} \OperatorTok{~}\StringTok{ "democrat"}\NormalTok{,}
+\NormalTok{           per_rep }\OperatorTok{>=}\StringTok{ }\NormalTok{.}\DecValTok{25} \OperatorTok{&}\StringTok{ }\NormalTok{per_rep }\OperatorTok{<=}\StringTok{ }\NormalTok{.}\DecValTok{75} \OperatorTok{~}\StringTok{ "bipartisan"}\NormalTok{,}
+\NormalTok{           per_rep }\OperatorTok{>}\StringTok{ }\NormalTok{.}\DecValTok{75} \OperatorTok{~}\StringTok{ "republican"}
+\NormalTok{         ))}
+\end{Highlighting}
+\end{Shaded}
+
+To quantify the levels of polarization in each election cycle, I
+calculated two statistics: network modularity and average absolute
+partisanship of donors.
+
+First, political donations can be thought of as a network where donors
+and candidates are nodes and donations connecting donors and candidates
+are edges. This conceptualization of the political donor landscape as
+network allows us to examine the network structure and calculate network
+statistics on the graph of donors and candidates. One of the most useful
+network statistics for measuring polarization in a network's modularity.
+
+The modularity of a graph measures how good the division of groups (such
+as political parties) is by calculating ``the number of edges falling
+within groups minus the expected number in an equivalent network with
+edges placed at random''
+(\url{https://www.pnas.org/content/103/23/8577}). The modularity of a
+network falls in range {[}need latex{]} {[}-1/2, 1{]}. If the modularity
+is positive, the number of edges that remain within each group is
+greater than the expected number to remain in-group based on chance. The
+higher the modularity, the greater the concentration of edges within
+each groups. In other words, the higher the modularity of a network, the
+higher the polarization among the groups.
+
+I calculated the modularity of the network graphs of each election cycle
+(2010, 2012, 2014). I used candidates' declared parties and donors'
+party bin as the groups for the modularity calculation. The modularity
+of the network graph of each election is in Table 1.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{modularity_calc <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(}\DataTypeTok{year =}  \StringTok{"2010"}\NormalTok{)\{}
+\NormalTok{  nodes_w_party <-}\StringTok{ }\NormalTok{by_donor }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(election_year }\OperatorTok{==}\StringTok{ }\NormalTok{year) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(refined_source_zip, party_bin) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{rename}\NormalTok{(}\DataTypeTok{node =}\NormalTok{ refined_source_zip,}
+         \DataTypeTok{party =}\NormalTok{ party_bin) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{rbind}\NormalTok{(donations_}\DecValTok{2} \OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{distinct}\NormalTok{(target, party) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(party }\OperatorTok{!=}\StringTok{ "other"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{rename}\NormalTok{(}\DataTypeTok{node =}\NormalTok{ target) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{party  =} \KeywordTok{case_when}\NormalTok{(}
+\NormalTok{      party }\OperatorTok{==}\StringTok{ "rep"} \OperatorTok{~}\StringTok{ "republican"}\NormalTok{,}
+\NormalTok{      party }\OperatorTok{==}\StringTok{ "dem"} \OperatorTok{~}\StringTok{ "democrat"}
+\NormalTok{    ))) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{distinct}\NormalTok{(node, party) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{party_num =} \KeywordTok{case_when}\NormalTok{(}
+\NormalTok{    party }\OperatorTok{==}\StringTok{ "democrat"} \OperatorTok{~}\StringTok{ }\DecValTok{1}\NormalTok{,}
+\NormalTok{    party }\OperatorTok{==}\StringTok{ "bipartisan"} \OperatorTok{~}\StringTok{ }\DecValTok{2}\NormalTok{,}
+\NormalTok{    party }\OperatorTok{==}\StringTok{ "republican"} \OperatorTok{~}\StringTok{ }\DecValTok{3}
+\NormalTok{  ))}
+  
+
+\NormalTok{filtered_donations }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(election_year }\OperatorTok{==}\StringTok{ }\NormalTok{year }\OperatorTok{&}\StringTok{ }\NormalTok{party }\OperatorTok{!=}\StringTok{ "other"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(refined_source_zip, target, contribution) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{graph_from_data_frame}\NormalTok{(}\DataTypeTok{vertices =}\NormalTok{ nodes_w_party) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{modularity}\NormalTok{(nodes_w_party}\OperatorTok{$}\NormalTok{party_num)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{election_years <-}\StringTok{ }\NormalTok{by_donor }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{distinct}\NormalTok{(election_year) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{pull}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{tibble}\NormalTok{(election_years) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(election_years) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{modularity =} \KeywordTok{modularity_calc}\NormalTok{(election_years))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 3 x 2
+## # Groups:   election_years [3]
+##   election_years modularity
+##   <chr>               <dbl>
+## 1 2010                0.399
+## 2 2012                0.491
+## 3 2014                0.480
+\end{verbatim}
+
+In addition to calculating the change in modularity of each of the
+election cycles, I also analyzed the change in mean absolute
+partisanship of the donors in each election cycle.
+
+I defined a donor's absolute partisanship as the absolute value of their
+partisanship score (which is on a scale from -1 to 1). Therefore, the
+larger a donor's absolute the partisanship, the higher percentage of
+their money that they contributed to a single party. To calculate the
+significance in the difference of the mean absolute partisanship, I use
+a bootstrap methodology with 1000 replications. The results of the
+bootstrap are found in Table 2.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diff_boostrap <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(}\DataTypeTok{year_1 =} \StringTok{"2014"}\NormalTok{,}
+                          \DataTypeTok{year_2 =} \StringTok{"2012"}\NormalTok{,}
+                          \DataTypeTok{replications =} \DecValTok{100}\NormalTok{) \{}
+\NormalTok{  year_}\DecValTok{1}\NormalTok{ =}\StringTok{ }\KeywordTok{as.character}\NormalTok{(year_}\DecValTok{1}\NormalTok{)}
+\NormalTok{  year_}\DecValTok{2}\NormalTok{ =}\StringTok{ }\KeywordTok{as.character}\NormalTok{(year_}\DecValTok{2}\NormalTok{)}
+  
+  \KeywordTok{print}\NormalTok{(year_}\DecValTok{1}\NormalTok{)}
+  \KeywordTok{print}\NormalTok{(year_}\DecValTok{2}\NormalTok{)}
+  
+\NormalTok{  bootstrap <-}\StringTok{ }\NormalTok{by_donor }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{filter}\NormalTok{(election_year }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(year_}\DecValTok{1}\NormalTok{, year_}\DecValTok{2}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{specify}\NormalTok{(abs_partisanship }\OperatorTok{~}\StringTok{ }\NormalTok{election_year) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{generate}\NormalTok{(}\DataTypeTok{reps =}\NormalTok{ replications, }\DataTypeTok{type =} \StringTok{"bootstrap"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{calculate}\NormalTok{(}\DataTypeTok{stat =} \StringTok{"diff in means"}\NormalTok{, }\DataTypeTok{order =} \KeywordTok{c}\NormalTok{(year_}\DecValTok{1}\NormalTok{, year_}\DecValTok{2}\NormalTok{))}
+  
+
+\NormalTok{  bootstrap }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{get_ci}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{cbind}\NormalTok{(bootstrap }\OperatorTok{%>%}\StringTok{ }
+\StringTok{            }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{mean_diff =} \KeywordTok{mean}\NormalTok{(stat))) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{cbind}\NormalTok{(bootstrap }\OperatorTok{%>%}\StringTok{ }
+\StringTok{            }\KeywordTok{get_p_value}\NormalTok{(}\DataTypeTok{obs_stat =} \DecValTok{0}\NormalTok{, }\DataTypeTok{direction =} \StringTok{"two_sided"}\NormalTok{))}
+  
+
+\NormalTok{                          \}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{election_years_expanded <-}\StringTok{ }\KeywordTok{expand.grid}\NormalTok{(}\DataTypeTok{year1 =} \KeywordTok{as.character}\NormalTok{(election_years),}
+            \DataTypeTok{year2 =} \KeywordTok{as.character}\NormalTok{(election_years)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(year1 }\OperatorTok{!=}\StringTok{ }\NormalTok{year2 }\OperatorTok{&}\StringTok{ }
+\StringTok{           }\KeywordTok{as.numeric}\NormalTok{(year1) }\OperatorTok{>}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(year2) }\OperatorTok{&}\StringTok{ }
+\StringTok{           }\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(year1) }\OperatorTok{-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(year2) }\OperatorTok{<}\StringTok{ }\DecValTok{2}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{() }
+
+\NormalTok{partisanship_diff_results <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(election_years_expanded, }
+                                   \KeywordTok{Map}\NormalTok{(diff_boostrap, }
+\NormalTok{                                       election_years_expanded}\OperatorTok{$}\NormalTok{year1, }
+\NormalTok{                                       election_years_expanded}\OperatorTok{$}\NormalTok{year2, }
+                                       \DecValTok{1000}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                     }\KeywordTok{tibble}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                     }\KeywordTok{unnest}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "2012"
+## [1] "2010"
+## [1] "2014"
+## [1] "2012"
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: `cols` is now required.
+## Please use `cols = c(.)`
+\end{verbatim}
+
+
+
+
+
+\newpage
+\singlespacing 
+\bibliography{/Users/rossdahlke/Dropbox/master.bib}
+
+\end{document}
