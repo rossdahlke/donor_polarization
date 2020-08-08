@@ -1,7 +1,7 @@
 ---
 output:
   pdf_document:
-    citation_package: natbib
+    # citation_package: biblatex
     keep_tex: true
     fig_caption: true
     latex_engine: pdflatex
@@ -18,11 +18,20 @@ geometry: margin=1in
 fontfamily: mathpazo
 fontsize: 11pt
 # spacing: double
-bibliography: "`r paste0(Sys.getenv('HOME'),'/Dropbox/master.bib')`"
-biblio-style: apsr
+bibliography: ../bibliography.bib
+# biblio-style: apsr
 ---
 
+# Introduction
+
+[comment]: <> (Need to flesh out this intro paragraph. Will do after rewriting the rest of it)
+  The effect of money in politics has been heavily studied. Particularly, studies have found a connection between politicians' polarization and political donors' actions.
+  The elimination of political donors altogether through publicly funded elections resulted in more polarized candidates because access-oriented interest groups acted as a moderating force [@hall2014].
+  
+  
+
 ```{r setup, include=FALSE}
+print(getwd())
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(infer)
@@ -94,7 +103,7 @@ The modularity of a graph measures how good the division of groups (such as poli
 I calculated the modularity of the network graphs of each election cycle (2010, 2012, 2014). I used candidates' declared parties and donors' party bin as the groups for the modularity calculation. The modularity of the network graph of each election is in Table 1.
 
 ```{r}
-modularity_calc <- function(year =  "2010"){
+modularity_calc <- function(year = year){
   nodes_w_party <- by_donor %>% 
   filter(election_year == year) %>% 
   select(refined_source_zip, party_bin) %>% 
@@ -145,11 +154,8 @@ I defined a donor's absolute partisanship as the absolute value of their partisa
 diff_boostrap <- function(year_1 = "2014",
                           year_2 = "2012",
                           replications = 100) {
-  year_1 = as.character(year_1)
-  year_2 = as.character(year_2)
-  
-  print(year_1)
-  print(year_2)
+  year_1 <- as.character(year_1)
+  year_2 <- as.character(year_2)
   
   bootstrap <- by_donor %>% 
     filter(election_year %in% c(year_1, year_2)) %>% 
@@ -189,16 +195,4 @@ partisanship_diff_results <- cbind(election_years_expanded,
 
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+# References
