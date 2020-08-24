@@ -7,32 +7,29 @@ output:
     latex_engine: pdflatex
     template: ../svm-latex-ms.tex
 title: "Political Donor Polarization in Wisconsin"
-thanks: "Code and data available at: github.com/Rdahlke"
+thanks: "Code and data available at: github.com/rossdahlke"
 author:
 - name: Ross Dahlke
 affiliation: University of Wisconsin-Madison
-abstract: "Since the 2012 recall election of Governor Scott Walker, political polarization in Wisconsin has become a major topic of research. Research on Wisconsin’s politics has shown that there is mass polarization in Wisconsin’s electorate. However, there is little research done on polarization of political donors and the policy implications of donor polarization. This study intends to fill this research gap by studying networks of political donors in Wisconsin. I use data from the Wisconsin Campaign Finance Information System, Wisconsin’s official campaign finance database, to create network analyses of donors to candidates for Wisconsin’s state-wide and state-legislative races. Through network analysis, this study found that political donor networks have become more polarized since the 2012 recall elections. This conclusion that donor networks—the people who are funding the state’s elections—have recently become more polarized provides context for the mass polarization of Wisconsin’s electorate."
+abstract: "Since the 2012 recall election of Governor Scott Walker, political polarization in Wisconsin has become a major topic of research. Mass polarization among Wisconsin's electorate is well documented. However, there is little research done on polarization of political donors and the policy implications of donor polarization. This study intends to fill this research gap by studying networks of political donors in Wisconsin. I use data from the Wisconsin Campaign Finance Information System, Wisconsin’s official campaign finance database, to create networks of donors to candidates for Wisconsin’s state-wide and state-legislative races. By using modularity, I empirically show that Republican and Democratic donor networks polarized in the 2012 election cycle during the recall election of Scott Walker and remained polarized in the 2014 electin cycle in which Governor Walker was reelected. I also validate these results using a non-parametric bootrapping method to compare the mean absolute partisanship of donors in each election cycle. I also discussion the implication of this conclusion that donor networks--the people hwo are funding the state's elections--have recently become more polarized within the contrasting frameworks of American campaign finance as investment versus consumnption."
 keywords: "state politics, political donations, network analysis, polarization"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 geometry: margin=1in
 fontfamily: mathpazo
 fontsize: 11pt
-# spacing: double
+spacing: double
 bibliography: ../bibliography.bib
-# biblio-style: apsr
+biblio-style: apsr
 ---
 
 # Introduction
 
-[comment]: <> (Need to flesh out this intro paragraph. Will do after rewriting the rest of it)
-  The effect of money in politics has been heavily studied. Particularly, studies have found a connection between politicians' polarization and political donors' actions.
-  The elimination of political donors altogether through publicly funded elections resulted in more polarized candidates because access-oriented interest groups acted as a moderating force [@hall2014].
+
   
-  
+# Wisconsin Context
 
 ```{r setup, include=FALSE}
-print(getwd())
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(include = FALSE)
 library(tidyverse)
 library(infer)
 library(igraph)
