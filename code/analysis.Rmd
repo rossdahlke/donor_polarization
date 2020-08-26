@@ -11,7 +11,7 @@ thanks: "Code and data available at: github.com/rossdahlke"
 author:
 - name: Ross Dahlke
 affiliation: University of Wisconsin-Madison
-abstract: "Since the 2012 recall election of Governor Scott Walker, political polarization in Wisconsin has become a major topic of research. Mass polarization among Wisconsin's electorate is well documented. However, there is little research done on polarization of political donors and the policy implications of donor polarization. This study intends to fill this research gap by studying networks of political donors in Wisconsin. I use data from the Wisconsin Campaign Finance Information System, Wisconsin’s official campaign finance database, to create networks of donors to candidates for Wisconsin’s state-wide and state-legislative races. By using modularity, I empirically show that Republican and Democratic donor networks polarized in the 2012 election cycle during the recall election of Scott Walker and remained polarized in the 2014 electin cycle in which Governor Walker was reelected. I also validate these results using a non-parametric bootrapping method to compare the mean absolute partisanship of donors in each election cycle. I also discussion the implication of this conclusion that donor networks--the people hwo are funding the state's elections--have recently become more polarized within the contrasting frameworks of American campaign finance as investment versus consumnption."
+abstract: "Since the 2012 recall election of Governor Scott Walker, political polarization in Wisconsin has become a major topic in Wisconin's politics. Mass polarization among Wisconsin's electorate is well documented. However, there is little research done on polarization of political donors and the policy implications of donor polarization. This study intends to fill this research gap by studying networks of political donors in Wisconsin. I use data from the Wisconsin Campaign Finance Information System, Wisconsin’s official campaign finance database, to create networks of donors to candidates for Wisconsin’s state-wide and state-legislative races. By using community modularity, I empirically show that Republican and Democratic donor networks polarized in the 2012 election cycle during the recall election of Scott Walker and remained polarized in the 2014 election cycle in which Governor Walker was reelected. I also validate these results using a non-parametric bootrapping method. I discuss the implications of this conclusion ______"
 keywords: "state politics, political donations, network analysis, polarization"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 geometry: margin=1in
@@ -22,9 +22,19 @@ bibliography: ../bibliography.bib
 biblio-style: apsr
 ---
 
-# Introduction
+# Wisconsin: A State Divided
+
+The Marquette University Law School Poll have referred to their polling in Wisconsin as a sharp divide that is "a lesson in the two worlds of Wisconsin"--the world of Democrats and another of Republicans. With polarization being an integral aspect of politics in Wisconsin and nationawide, they find that "it seems often as if people have not only differing opinions but differing views of facts and realities" [@mu_poll_2017].
 
 
+  
+  - Access-oriented donors
+  
+  - Consumption
+  
+  - Question of causality
+  
+  - Connection between mass polarization and donors
   
 # Wisconsin Context
 
@@ -37,7 +47,7 @@ library(igraph)
 
 # Methodology
 
-All data on political contributions came from the Wisconsin Campaign Finance Information System (CFIS). I exported all contributions to State Assembly, State Senate, and Gubernatorial races from the 2010, 2012, and 2014 elections. This dataset does not include donations to party committees, although it does include disbursements from these committees. I manually created a table of the parties of each of all the campaigns receiving contributions in this timeframe and added the party of the campaign receiving the donation to this dataset.
+  All data on political contributions came from the Wisconsin Campaign Finance Information System (CFIS). I exported all contributions to State Assembly, State Senate, and Gubernatorial races from the 2010, 2012, and 2014 elections. This dataset does not include donations to party committees, although it does include disbursements from these committees. I manually created a table of the parties of each of all the campaigns receiving contributions in this timeframe and added the party of the campaign receiving the donation to this dataset.
 
 ```{r}
 donations <- readRDS("../data/wi_donations.RDA") %>% 
