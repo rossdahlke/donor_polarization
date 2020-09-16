@@ -22,21 +22,21 @@ bibliography: ../bibliography.bib
 biblio-style: apsr
 ---
 
-# Wisconsin: A State Divided
+Political donors play a critical role in our democracy
 
-The Marquette University Law School Poll have referred to their polling in Wisconsin as a sharp divide that is "a lesson in the two worlds of Wisconsin"--the world of Democrats and another of Republicans. With polarization being an integral aspect of politics in Wisconsin and nationawide, they find that "it seems often as if people have not only differing opinions but differing views of facts and realities" [@mu_poll_2017].
+Similarities to other political actors? Same psychological processes?
 
+Are political donors being becoming polarized like other political actors?
 
-  
-  - Access-oriented donors
-  
-  - Consumption
-  
-  - Question of causality
-  
-  - Connection between mass polarization and donors
-  
-# Wisconsin Context
+While polling may show the polarization of political donors, there has not been much research into actual actions of political donors that show evidence for their polarization
+
+Voters have more polarized voting, office holders can have more polarized voting records.
+
+This study asks the question: Like other political actors, is there evidence of political donors becoming polarized?
+
+Hypothesis: Yes, they are becoming more polarized, in part because they are already a largely polarized group. We would expect more polarization
+
+Since donors are believed to play an out-sized role in our democracy, understanding whether political donors have become more polarized is important for identifying both the causes and effects of polarization in our entire political system
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(include = FALSE)
@@ -201,5 +201,18 @@ partisanship_diff_results <- cbind(election_years_expanded,
 
 
 ```
+
+```{r}
+ggplot(by_donor %>% filter(abs_partisanship < 1), aes(abs_partisanship, fill = party_bin)) +
+  geom_histogram() +
+  facet_wrap(party_bin~election_year, scales = "free_y")
+```
+
+```{r}
+ggplot(by_donor %>% filter(abs_partisanship < 1), aes(abs_partisanship, fill = party_bin)) +
+  geom_density() +
+  facet_wrap(party_bin~election_year)
+```
+
 
 # References
