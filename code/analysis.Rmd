@@ -22,11 +22,13 @@ bibliography: ../bibliography.bib
 biblio-style: apsr
 ---
 
-Political donors play a critical role in our democracy
+Political campaign finance plays an important role in the American political system. This significance is evidenced by the attention that academic researchers pay the topic as well as the many different contexts in which campaign finance is studied. For example, academics have researched the impact of political donations on roll call voting in the U.S. Congress [@roscoe2005; @stratmann1991], gender representation in political parties [@crowder-meyer2018; @barber2016; @kitchens2016; @thomsen2017], ability to win political campaigns [@bonica2017; @bonneau2007], the connection between money raised and public attention [@ellis2017], judicial function [@palmer2008], perceptions of corruption [@bowler2015], political economy and stock returns [@akey2015; @garro2020; @cooper2010], and the significant amount of time that candidates and legislators devote to fundraising [@torres-spelliscy2017].
 
 Similarities to other political actors? Same psychological processes?
 
 Are political donors being becoming polarized like other political actors?
+
+Some research has started to investigate the connection between donors and candidates as "an important part of the story of the polarization of American politics" [@barber2016]. Barber found that higher state-level contribution limits for individuals leads to more moderate legislator in that state. And higher limits for political action committees (PACs) results in more moderate candidates.
 
 While polling may show the polarization of political donors, there has not been much research into actual actions of political donors that show evidence for their polarization
 
