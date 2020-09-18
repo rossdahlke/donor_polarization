@@ -22,13 +22,22 @@ bibliography: ../bibliography.bib
 biblio-style: apsr
 ---
 
-Political campaign finance plays an important role in the American political system. This significance is evidenced by the attention that academic researchers pay to the topic as well as the many different contexts in which campaign finance is studied. For example, academics have researched the impact of political donations on roll call voting in the U.S. Congress [@roscoe2005; @stratmann1991], gender representation in political parties [@crowder-meyer2018; @barber2016; @kitchens2016; @thomsen2017], ability to win political campaigns [@bonica2017; @bonneau2007], the connection between money raised and public attention [@ellis2017], judicial function [@palmer2008], perceptions of corruption [@bowler2015], political economy and stock returns [@akey2015; @garro2020; @cooper2010], and the significant amount of time that candidates and legislators devote to fundraising [@torres-spelliscy2017].
+Political campaign finance plays an important role in the American political system. This significance is evidenced by the attention that academic researchers pay to the topic as well as the many different contexts in which campaign finance is studied. For example, academics have researched the impact of political donations on roll-call voting in the U.S. Congress [@roscoe2005; @stratmann1991], gender representation in political parties [@crowder-meyer2018; @barber2016; @kitchens2016; @thomsen2017], ability to win political campaigns [@bonica2017; @bonneau2007], the connection between money raised and public attention [@ellis2017], judicial function [@palmer2008], perceptions of corruption [@bowler2015], political economy and stock returns [@akey2015; @garro2020; @cooper2010], and the significant amount of time that candidates and legislators devote to fundraising [@torres-spelliscy2017]. 
+
+Even though political donors are believed to play an out-sized role in democracy, the psychological processes of donors is thought to be similar to voters. Political donations can be thought of an extension of voting. In other words, both actions are political consumptions that seek to improve their preferred candidate's chances of winning. Ansolabehere, de Figueiredo and Snyder summarized this idea by stating, "In our view, campaign contributing should not be viewed as an investment, but rather as a form of consumption--or, in the language of politics, participation" [@ansolabehere2003]. Donations can be seen as an outlet for motivated citizens to increase their participation beyond just turning out to vote when they perceive the stakes of elections to be high [@hill2017].
+
+The folk-theory of political donors is of smokey backrooms and access-oriented donors who seek to have a direct influence on policy making. However, even when donors contribute to legislators that maximize their economic interests, donations are not found to be motivated by existing policy agreements and not an expectation of access [@barber2016]. Even donations from business executives have been found to be "best understood as purchases of `good will` whose returns, while positive in expectation, are contingent and rare" [@gordon2007].
+
+One study has suggested that 
+# Different:
+
+Political parties draw their bases of electoral support from different geographic bases. However, major campaign donors are highly concentrated geographically. These "big-donor neighborhoods" are unrepresentative of the country as a whole and point to these communities having a distinct political culture [@bramlett2011].
 
 Similarities to other political actors? Same psychological processes?
 
 Are political donors being becoming polarized like other political actors?
 
-Some research has started to investigate the connection between donors and candidates as "an important part of the story of the polarization of American politics" [@barber2016]. Barber found that higher state-level contribution limits for individuals leads to more moderate legislator in that state. And higher limits for political action committees (PACs) results in more moderate candidates.
+Some research has started to investigate the connection between donors and candidates as "an important part of the story of the polarization of American politics" [@barber2016]. Barber found that higher state-level contribution limits for individuals leads to more moderate legislators in that state. And higher limits for political action committees (PACs) results in more moderate candidates.
 
 While polling may show the polarization of political donors, there has not been much research into actual actions of political donors that show evidence for their polarization
 
