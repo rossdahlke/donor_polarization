@@ -10,13 +10,13 @@ title: "Political Donor Polarization in Wisconsin"
 thanks: "Code and data available at: github.com/rossdahlke"
 author:
 - name: Ross Dahlke
-affiliation: University of Wisconsin-Madison
+affiliation: Stanford University
 abstract: "Since the 2012 recall election of Governor Scott Walker, political polarization in Wisconsin has become a major topic in Wisconin's politics. Mass polarization among Wisconsin's electorate is well documented. However, there is little research done on polarization of political donors and the policy implications of donor polarization. This study intends to fill this research gap by studying networks of political donors in Wisconsin. I use data from the Wisconsin Campaign Finance Information System, Wisconsin’s official campaign finance database, to create networks of donors to candidates for Wisconsin’s state-wide and state-legislative races. By using community modularity, I empirically show that Republican and Democratic donor networks polarized in the 2012 election cycle during the recall election of Scott Walker and remained polarized in the 2014 election cycle in which Governor Walker was reelected. I also validate these results using a non-parametric bootrapping method. I discuss the implications of this conclusion ______"
 keywords: "state politics, political donations, network analysis, polarization"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 geometry: margin=1in
 fontfamily: mathpazo
-fontsize: 11pt
+fontsize: 12pt
 spacing: double
 bibliography: ../bibliography.bib
 biblio-style: apsr
@@ -26,7 +26,7 @@ Political campaign finance plays an important role in the American political sys
 
 Even though political donors are believed to play an out-sized role in democracy, the psychological processes of donors is thought to be similar to voters. Political donations can be thought of an extension of voting. In other words, both actions are political consumptions that seek to improve their preferred candidate's chances of winning. Ansolabehere, de Figueiredo and Snyder summarized this idea by stating, "In our view, campaign contributing should not be viewed as an investment, but rather as a form of consumption--or, in the language of politics, participation" [@ansolabehere2003]. Donations can be seen as an outlet for motivated citizens to increase their participation beyond just turning out to vote when they perceive the stakes of elections to be high [@hill2017].
 
-The folk-theory of political donors is of smokey backrooms and access-oriented donors who seek to have a direct influence on policy making. However, even when donors contribute to legislators that maximize their economic interests, donations are not found to be motivated by existing policy agreements and not an expectation of access [@barber2016c]. Even donations from business executives have been found to be "best understood as purchases of `good will` whose returns, while positive in expectation, are contingent and rare" [@gordon2007].
+The folk-theory of political donors is of smokey backrooms and access-oriented donors who seek to have a direct influence on policy making. However, even when donors contribute to legislators that maximize their economic interests, donations are not found to be motivated by existing policy agreements and not an expectation of access [@barber2016c]. Even donations from business executives have been found to be "best understood as purchases of 'good will' whose returns, while positive in expectation, are contingent and rare" [@gordon2007].
 
 Although the psychological process of making a political campaign contribution can be thought of as similar to voting, there are significant demographic and ideological differences between donors and voters. People with lower incomes, less education, and do not work in professional and managerial jobs are less likely to be politically engaged, including making political donations [@laurison2016]. Donors to the Democratic and Republican parties were summarized as being "Limousine Liberals" and "Corporate Conservatives" [@francia2005].In addition, Democrats and Republicans draw their bases of electoral support from different geographic bases. However, major campaign donors are highly concentrated geographically. These "big-donor neighborhoods" are unrepresentative of the country as a whole and point to these communities having a distinct political culture [@bramlett2011]. In both parties, donors are more ideologically extreme than non-donating voters, even among primary voters [@hill2017; @francia2003]. Even wealthy donors who make up the "big money" in politics are very partisan [@mccarty2006]. 
 
@@ -36,9 +36,11 @@ Studying polarization, particularly among political donors can be difficult beca
 
 **H1: Political donors in the State of Wisconsin polarized during the 2011-2012 election cycle compared to the 2009-2010 election cycle and maintained their level of polarization in the 2013-2014 election cycle.**
 
-Alternatively, if political donors are contributors to polarization we would expect to see polarization levels stays the same from 2009-2010 compared to 2011-2012--suggesting that political donors helped create an environment in which such a polarizing event could take place.
+Alternatively, if political donors are contributors to polarization we would expect to see hypothesis 2. 
 
-In addition, this paper makes a methodological contribution to the field of political polarization studies by taking a network approach to measuring polarization to similar to studies of polarization in social networks [citations needed]. This paper conceives of the political donor landscape of donors and candidates acting as nodes who are connected by donations made that act as edges. This method is important in studying political donor networks because it takes into consideration real-world actions, such as in the study of polarization among member of congress where voting records [citation needed] and co-sponsorships are used to study polarization [citation needed] opposed to surveys administered to donors that rely on self-reported ideology and partisanship.
+**H2: Polarization levels stays the same from 2009-2010 compared to 2011-2012--suggesting that political donors helped create an environment in which such a polarizing event could take place.**
+
+In addition, this paper makes a methodological contribution to the field of political polarization studies by taking a network approach to measuring polarization to similar to studies of congressional polarization [@waugh2009, @zhang2008] and polarization in social media networks [@guerra2013; @garcia2015; @conover2011]. This paper conceives of the political donor landscape of donors and candidates acting as nodes who are connected by donations made that act as edges. This method is important in studying political donor networks because it takes into consideration real-world actions, such as in the study of polarization among member of congress where voting records [@guerra2013] and co-sponsorships [@zhang2008] are used to study polarization opposed to surveys administered to donors that rely on self-reported ideology and partisanship.
 
 # Wisconsin Context
 
