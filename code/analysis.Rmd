@@ -257,7 +257,7 @@ table_2 %>%
 
 ### Figure 1
 
-```{r include = T, echo = F, fig.cap = "Fig. 1: Visual representation of Wisconsin donor networks in the 2010, 2012 and 2014 election cycle using the Yifan Hu layout algorithm. Percentages on the bars reprsent the percent of donors in each party bin."}
+```{r include = T, echo = F, fig.cap = "Visual representation of Wisconsin donor networks in the 2010, 2012 and 2014 election cycle using the Yifan Hu layout algorithm. Percentages on the bars reprsent the percent of donors in each party bin."}
 knitr::include_graphics("../figures/fig1.png")
 ```
 
