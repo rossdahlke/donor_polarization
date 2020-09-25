@@ -129,6 +129,8 @@ The modularity of a graph measures how good the division of groups (such as poli
 
 $$Q = \frac{1}{2m} \sum_{ij}\left[A_{ij} - \frac{k_{i}k_{j}}{2m} \right]\delta(g_{i},g_{j})$$
 
+In this equation $m = \frac{1}{2}\sum_{i}k_{i}$ is equal to the "total strength of ties in the network", $k_{i}=\sum_{j}A_{ij}$ is the strength/ weighted degree of the $i$th node, $g_{i}$ is the group (in this case, party/ party bin) to which the $i$ belong, and $\delta(g_{i},g_{j}) = 1$ if $i$ and $j$ belong to the same group (party/ party bin) and 0 if they do not belong to the same party/ party bin [@waugh2009].
+
 I calculated the modularity of the network graphs of each election cycle (2010, 2012, 2014) using the `igraph` R package [@igraph]. I used candidates' declared parties and donors' party bin as the groups for the modularity calculation. The modularity of the network graph of each election is in Table 1.
 
 ```{r}
@@ -169,15 +171,15 @@ election_years <- by_donor %>%
   pull()
 ```
 
-```{r}
-tibble(election_years) %>% 
+```{r warning = F, message = F}
+table_1 <- tibble(election_years) %>% 
   group_by(election_years) %>% 
   mutate(modularity = modularity_calc(election_years))
 ```
 
 In addition to calculating the change in modularity of each of the election cycles, I also analyzed the change in mean absolute partisanship of the donors in each election cycle. 
 
-I defined a donor's absolute partisanship as the absolute value of their partisanship score (which is on a scale from -1 to 1). Therefore, the larger a donor's absolute the partisanship, the higher percentage of their money that they contributed to a single party. To calculate the significance in the difference of the mean absolute partisanship, I use a bootstrap methodology with 1000 replications. The results of the bootstrap are found in Table 2.
+I defined a donor's absolute partisanship as the absolute value of their partisanship score (which is on a scale from -1 to 1). Therefore, the larger a donor's absolute the partisanship, the higher percentage of their money that they contributed to a single party. To calculate the significance in the difference of the mean absolute partisanship, I use a bootstrap methodology with 1000 replications. This paper uses a non-parametric bootstrap/ resampling method because of the non-normal distribution of partisanship of the donors given that a strong majority (`r scales::percent(by_donor %>% summarize(n = n(), partisan_1 = sum(abs_partisanship == 1)) %>% mutate(partisan_1_per = partisan_1 / n) %>% pull(partisan_1_per))`) of donors in a given election cycle only contribute to a single party. The results of the bootstrap are found in Table 2.
 
 ```{r}
 diff_boostrap <- function(year_1 = "2014",
@@ -192,20 +194,17 @@ diff_boostrap <- function(year_1 = "2014",
     generate(reps = replications, type = "bootstrap") %>% 
     calculate(stat = "diff in means", order = c(year_1, year_2))
   
-
   bootstrap %>% 
     get_ci() %>% 
     cbind(bootstrap %>% 
             summarize(mean_diff = mean(stat))) %>% 
     cbind(bootstrap %>% 
             get_p_value(obs_stat = 0, direction = "two_sided"))
-  
-
                           }
 ```
 
 
-```{r}
+```{r warning = F, message = F}
 election_years_expanded <- expand.grid(year1 = as.character(election_years),
             year2 = as.character(election_years)) %>% 
   filter(year1 != year2 & 
@@ -213,27 +212,53 @@ election_years_expanded <- expand.grid(year1 = as.character(election_years),
            (as.numeric(year1) - as.numeric(year2) < 2)) %>% 
   ungroup() 
 
-partisanship_diff_results <- cbind(election_years_expanded, 
+# may run into memory issues with this calculation
+table_2 <- cbind(election_years_expanded, 
                                    Map(diff_boostrap, 
                                        election_years_expanded$year1, 
                                        election_years_expanded$year2, 
                                        1000) %>% 
                                      tibble() %>% 
-                                     unnest())
+                                     unnest()) %>% 
+  mutate(ci = paste0(round(lower_ci, 5),"—",round(upper_ci, 5)),
+         p_value = ifelse(p_value == 0, "<.001", p_value),
+         mean_diff = round(mean_diff, 5),
+         cycle = paste0(year1," compared to ",year2)) %>% 
+  select(cycle, mean_diff, ci, p_value)
 
 
 ```
 
-```{r}
-ggplot(by_donor %>% filter(abs_partisanship < 1), aes(abs_partisanship, fill = party_bin)) +
-  geom_histogram() +
-  facet_wrap(party_bin~election_year, scales = "free_y")
+\newpage 
+
+# Tables
+
+### Table 1
+
+```{r include = T, echo = F}
+table_1 %>% 
+  knitr::kable(col.names = c("Election Cycle", "Modularity"),
+               caption = "Tbl. 1: Modularity calculation for the donor networks in each election cycle. Higher modularity means more polarization")
 ```
 
-```{r}
-ggplot(by_donor %>% filter(abs_partisanship < 1), aes(abs_partisanship, fill = party_bin)) +
-  geom_density() +
-  facet_wrap(party_bin~election_year)
+\newpage
+
+### Table 2
+
+```{r include = T, echo = F}
+table_2 %>%
+  knitr::kable(col.names = c("Election Cycle", "T", "CI", "p"),
+               caption = "Tbl. 2: Bootstrapped difference-in-means test with 1,000 replications comparing mean partisanship of donors.")
+```
+
+\newpage
+
+# Figures
+
+### Figure 1
+
+```{r include = T, echo = F, fig.cap = "Fig. 1: Visual representation of Wisconsin donor networks in the 2010, 2012 and 2014 election cycle using the Yifan Hu layout algorithm. Percentages on the bars reprsent the percent of donors in each party bin."}
+knitr::include_graphics("../figures/fig1.png")
 ```
 
 
