@@ -129,7 +129,7 @@ The modularity of a graph measures how good the division of groups (such as poli
 
 $$Q = \frac{1}{2m} \sum_{ij}\left[A_{ij} - \frac{k_{i}k_{j}}{2m} \right]\delta(g_{i},g_{j})$$
 
-In this equation $m = \frac{1}{2}\sum_{i}k_{i}$ is equal to the "total strength of ties in the network", $k_{i}=\sum_{j}A_{ij}$ is the strength/ weighted degree of the $i$th node, $g_{i}$ is the group (in this case, party/ party bin) to which the $i$ belong, and $\delta(g_{i},g_{j}) = 1$ if $i$ and $j$ belong to the same group (party/ party bin) and 0 if they do not belong to the same party/ party bin [@waugh2009].
+In this equation $m = \frac{1}{2}\sum_{i}k_{i}$ is equal to the strength of all the ties in the network, $k_{i}=\sum_{j}A_{ij}$ is the strength/ weighted degree of the $i$th node, $g_{i}$ is the group (in this case, party/ party bin) to which the $i$ belong, and $\delta(g_{i},g_{j}) = 1$ if $i$ and $j$ belong to the same group (party/ party bin) and 0 if they do not belong to the same party/ party bin.
 
 I calculated the modularity of the network graphs of each election cycle (2010, 2012, 2014) using the `igraph` R package [@igraph]. I used candidates' declared parties and donors' party bin as the groups for the modularity calculation. The modularity of the network graph of each election is in Table 1.
 
@@ -179,7 +179,11 @@ table_1 <- tibble(election_years) %>%
 
 In addition to calculating the change in modularity of each of the election cycles, I also analyzed the change in mean absolute partisanship of the donors in each election cycle. 
 
-I defined a donor's absolute partisanship as the absolute value of their partisanship score (which is on a scale from -1 to 1). Therefore, the larger a donor's absolute the partisanship, the higher percentage of their money that they contributed to a single party. To calculate the significance in the difference of the mean absolute partisanship, I use a bootstrap methodology with 1000 replications. This paper uses a non-parametric bootstrap/ resampling method because of the non-normal distribution of partisanship of the donors given that a strong majority (`r scales::percent(by_donor %>% summarize(n = n(), partisan_1 = sum(abs_partisanship == 1)) %>% mutate(partisan_1_per = partisan_1 / n) %>% pull(partisan_1_per))`) of donors in a given election cycle only contribute to a single party. The results of the bootstrap are found in Table 2.
+I defined a donor's absolute partisanship as the absolute value of their partisanship score (which is on a scale from -1 to 1). Therefore, the larger a donor's absolute the partisanship, the higher percentage of their money that they contributed to a single party. To calculate the significance in the difference of the mean absolute partisanship, I use a bootstrap methodology with 1000 replications. This paper uses a non-parametric permutation method because of the non-normal distribution of partisanship of the donors given that a strong majority (`r scales::percent(by_donor %>% summarize(n = n(), partisan_1 = sum(abs_partisanship == 1)) %>% mutate(partisan_1_per = partisan_1 / n) %>% pull(partisan_1_per))`) of donors across all election cycles only contribute to a single party. 
+
+To conduct a hypothesis test with a permutation, you first compute the mean for each group of the measure that you're interested in--in this case we are calculating the mean partisanship of donors in two given election cycles. This is difference $d = \overline{X_{1}}-\overline{X_{2}}$. Next, you pool the data and randomly draw new groups of data of equal sizes of the original groups. You then calculate the difference in sample means from these random draws and compare them to your original sample mean [@wilcox2003]. This paper uses 1,000 replications, primarily to be able to calculate a p-value at the to thousandsths-level. A p-value for a permutation test is done by calculating the proportion of randomly drawn $d's$ that are greater than the original $d$ [@butar2008]. In essence, you figure out what proportion of your randomized draws have a sample mean that is greater or less than your observed data--how many randomized groupings having a result that is as or more extreme than your observed groups. 
+
+The results of the bootstrap are found in Table 2.
 
 ```{r}
 diff_boostrap <- function(year_1 = "2014",

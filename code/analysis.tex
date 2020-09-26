@@ -173,7 +173,7 @@ and passage of Act 10 and subsequent protests and recall election, to
 analyze the relationship between donor polarization and mass
 polarization. The data show that political donor networks polarized
 during the 2012 election cycle at the same time as the mass electorate.
-This result suggests that politic donors were likely not the cause of
+This result suggests that political donors were likely not the cause of
 the polarization in the state and provides evidence for the
 `consumption' model of political donations.
 
@@ -402,18 +402,18 @@ of edges that remain within each group is greater than the expected
 number to remain in-group based on chance. The higher the modularity,
 the greater the concentration of edges within each groups. In other
 words, the higher the modularity of a network, the higher the
-polarization among the groups. Formally, the equation to calculation
+polarization among the groups. Formally, the equation to calculate
 modularity Q is:
 
 \[Q = \frac{1}{2m} \sum_{ij}\left[A_{ij} - \frac{k_{i}k_{j}}{2m} \right]\delta(g_{i},g_{j})\]
 
 In this equation \(m = \frac{1}{2}\sum_{i}k_{i}\) is equal to the
-``total strength of ties in the network'', \(k_{i}=\sum_{j}A_{ij}\) is
-the strength/ weighted degree of the \(i\)th node, \(g_{i}\) is the
-group (in this case, party/ party bin) to which the \(i\) belong, and
+strength of all the ties in the network, \(k_{i}=\sum_{j}A_{ij}\) is the
+strength/ weighted degree of the \(i\)th node, \(g_{i}\) is the group
+(in this case, party/ party bin) to which the \(i\) belong, and
 \(\delta(g_{i},g_{j}) = 1\) if \(i\) and \(j\) belong to the same group
 (party/ party bin) and 0 if they do not belong to the same party/ party
-bin (Waugh et al., n.d.).
+bin.
 
 I calculated the modularity of the network graphs of each election cycle
 (2010, 2012, 2014) using the \texttt{igraph} R package (Csardi and
@@ -431,10 +431,28 @@ larger a donor's absolute the partisanship, the higher percentage of
 their money that they contributed to a single party. To calculate the
 significance in the difference of the mean absolute partisanship, I use
 a bootstrap methodology with 1000 replications. This paper uses a
-non-parametric bootstrap/ resampling method because of the non-normal
-distribution of partisanship of the donors given that a strong majority
-(98\%) of donors in a given election cycle only contribute to a single
-party. The results of the bootstrap are found in Table 2.
+non-parametric permutation method because of the non-normal distribution
+of partisanship of the donors given that a strong majority (98\%) of
+donors across all election cycles only contribute to a single party.
+
+To conduct a hypothesis test with a permutation, you first compute the
+mean for each group of the measure that you're interested in--in this
+case we are calculating the mean partisanship of donors in two given
+election cycles. This is difference
+\(d = \overline{X_{1}}-\overline{X_{2}}\). Next, you pool the data and
+randomly draw new groups of data of equal sizes of the original groups.
+You then calculate the difference in sample means from these random
+draws and compare them to your original sample mean (Wilcox 2003). This
+paper uses 1,000 replications, primarily to be able to calculate a
+p-value at the to thousandsths-level. A p-value for a permutation test
+is done by calculating the proportion of randomly drawn \(d's\) that are
+greater than the original \(d\) (Butar Butar and Park 2008). In essence,
+you figure out what proportion of your randomized draws have a sample
+mean that is greater or less than your observed data--how many
+randomized groupings having a result that is as or more extreme than
+your observed groups.
+
+The results of the bootstrap are found in Table 2.
 
 \newpage
 
@@ -456,9 +474,9 @@ Election Cycle & Modularity\tabularnewline
 Election Cycle & Modularity\tabularnewline
 \midrule
 \endhead
-2010 & 0.3987225\tabularnewline
-2012 & 0.4912343\tabularnewline
-2014 & 0.4797875\tabularnewline
+2010 & 0.3987172\tabularnewline
+2012 & 0.4912337\tabularnewline
+2014 & 0.4797882\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -478,10 +496,10 @@ Election Cycle & T & CI & p\tabularnewline
 Election Cycle & T & CI & p\tabularnewline
 \midrule
 \endhead
-2012 compared to 2010 & 0.04208 & 0.04021---0.04396 &
+2012 compared to 2010 & 0.04211 & 0.04037---0.0439 &
 \textless.001\tabularnewline
-2014 compared to 2012 & -0.00027 & -0.00086---0.00031 &
-0.398\tabularnewline
+2014 compared to 2012 & -0.00029 & -0.00089---0.00033 &
+0.36\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -562,6 +580,10 @@ Perceptions of Corruption.'' \emph{American Politics Research} 44 (2):
 Bramlett, Brittany H., James G. Gimpel, and Frances E. Lee. 2011. ``The
 Political Ecology of Opinion in Big-Donor Neighborhoods.''
 \emph{Political Behavior} 33: 565--600.
+
+\leavevmode\hypertarget{ref-butar2008}{}%
+Butar Butar, Ferry, and Jae-Wan Park. 2008. ``Permutation Tests for
+Comparing Two Populations.'' \emph{MSME} 3 (September): 19--30.
 
 \leavevmode\hypertarget{ref-pew2017}{}%
 Center, Pew Research. 2017. ``The Partisan Divide on Political Values
@@ -729,6 +751,12 @@ Journal} 42 (December).
 Waugh, Andrew Scott, Liuyi Pei, James H. Fowler, Peter J. Mucha, and
 Mason Alexander Porter. n.d. ``Party Polarization in Congress: A Network
 Science Approach.''
+
+\leavevmode\hypertarget{ref-wilcox2003}{}%
+Wilcox, Rand R. 2003. ``8 - Comparing Two Independent Groups.'' In
+\emph{Applying Contemporary Statistical Techniques}, edited by Rand R.
+Wilcox, 237--84. Burlington: Academic Press.
+\url{https://doi.org/https://doi.org/10.1016/B978-012751541-0/50029-8}.
 
 \leavevmode\hypertarget{ref-zhang2008}{}%
 Zhang, Yan, A. J. Friend, Amanda L. Traud, Mason A. Porter, James H.
