@@ -11,7 +11,7 @@ thanks: "Code and data available at: github.com/rossdahlke"
 author:
 - name: Ross Dahlke
 affiliation: Stanford University
-abstract: "American politics has recently been defined by unprecedented levels of partisan polarization. Given the concurrent rise of the amount of money in politics, there is a natural connection that many people make between money in politics and polarization. This paper uses the occurence of a specific event, former Wisconsin Governor Scott Walker's introduction and passage of Act 10 and subsequent protests and recall election, to analyze the relationship between donor polarization and mass polarization. The data show that political donor networks polarized during the 2012 election cycle at the same time as the mass electorate. This result suggests that political donors were likely not the cause of the polarization in the state and provides evidence for the 'consumption' model of political donations."
+abstract: "American politics has recently been defined by unprecedented levels of partisan polarization. Given the concurrent rise of the amount of money in politics, there is a natural connection that many people make between money in politics and polarization. This paper uses the occurence of a specific event, former Wisconsin Governor Scott Walker's introduction and passage of Act 10 and subsequent protests and recall election, to analyze the relationship between donor polarization and mass polarization. The data show that political donor networks polarized during the 2012 election cycle at the same time as the mass electorate. This result suggests that political donors were likely not the main contributors to the polarization in the state and provides evidence for the 'consumption' model of political donations."
 keywords: "state politics, political donations, network analysis, polarization"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 geometry: margin=1in
@@ -34,15 +34,15 @@ This ideological extremity shown by political donors has led some scholars to su
 
 Studying polarization, particularly among political donors can be difficult because of the myriad of potential confounding factors that can contribute to polarization [@harden2016]. In addition, polarization is generally a phenomenon that gradually increases or decreases over time [@pew2017]. However, this paper leverages a singular event, former Wisconsin Governor Scott Walker's proposition and passage of Act 10, a "budget repair bill" that ended collective bargaining for teachers unions and the subsequent protests and recall election, to examine political donor polarization in the state of Wisconsin. Given the recent research which has pointed to the polarization of political donors as being _reactive_ instead of _causal_ to broader polarization, we could expect political donors to follow the trend of voters and polarize after introduction of Act 10 and subsequent events.
 
-**H1: Political donors in the State of Wisconsin polarized during the 2011-2012 election cycle compared to the 2009-2010 election cycle and maintained their level of polarization in the 2013-2014 election cycle.**
+**$H_{1}$: Political donors in the State of Wisconsin polarized during the 2011-2012 election cycle compared to the 2009-2010 election cycle and maintained their level of polarization in the 2013-2014 election cycle.**
 
-If hypothesis one is found to be correct, these results would strengthen the evidence for politics donors being _reactive_ to their political environment as we would expect under Ansolabehere, de Figueiredo and Snyder's consumption model of political giving.
+If the null to this hypothesis is rejected, these results would strengthen the evidence for politics donors being _reactive_ to their political environment as we would expect under Ansolabehere, de Figueiredo and Snyder's consumption model of political giving.
 
 Alternatively, if political donors are contributors to polarization, as is suggested by some scholars, we would expect to see hypothesis 2. 
 
-**H2: Polarization levels stays the same from 2009-2010 compared to 2011-2012.**
+**$H_{2}$: Polarization levels stays the same from 2009-2010 compared to 2011-2012.**
 
-If hypothesis two is upheld, the result would suggest that political donors helped to create the polarized political environment that we see today.
+If the null to hypothesis two is rejected, the result would suggest that political donors helped to create the polarized political environment that we see today.
 
 In addition, this paper makes a methodological contribution to the field of political polarization studies by taking a network approach to measuring polarization to similar to studies of congressional polarization [@waugh2009, @zhang2008] and polarization in social media networks [@guerra2013; @garcia2015; @conover2011] and uses modularity as a measure of polarization within political donor networks. This paper conceives of the political donor landscape of donors and candidates acting as nodes who are connected by donations made that act as edges. This method is important in studying political donor networks because it takes into consideration real-world actions, such as in the study of polarization among member of congress where voting records [@guerra2013] and co-sponsorships [@zhang2008], which are used to study polarization opposed to surveys administered to donors that rely on self-reported ideology and partisanship.
 
