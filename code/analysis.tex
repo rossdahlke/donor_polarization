@@ -52,7 +52,8 @@
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 
 
-\title{Political Donor Polarization in Wisconsin \thanks{Code and data available at: github.com/rossdahlke}  }
+\title{Political Donor Polarization: Observing Consumptive Behavior using a
+Network Approach \thanks{Code and data available at: github.com/rossdahlke}  }
 
 
 
@@ -106,7 +107,8 @@
             bookmarks=true,
             pdfauthor={Ross Dahlke ()},
              pdfkeywords = {state politics, political donations, network analysis, polarization},  
-            pdftitle={Political Donor Polarization in Wisconsin},
+            pdftitle={Political Donor Polarization: Observing Consumptive Behavior using a
+Network Approach},
             colorlinks=true,
             citecolor=blue,
             urlcolor=blue,
@@ -173,9 +175,9 @@ and passage of Act 10 and subsequent protests and recall election, to
 analyze the relationship between donor polarization and mass
 polarization. The data show that political donor networks polarized
 during the 2012 election cycle at the same time as the mass electorate.
-This result suggests that political donors were likely not the cause of
-the polarization in the state and provides evidence for the
-`consumption' model of political donations.
+This result suggests that political donors were likely not the main
+contributors to the polarization in the state and provides evidence for
+the `consumption' model of political donations.
 
 
 \vskip 8.5pt \noindent \emph{Keywords}: state politics, political donations, network analysis, polarization \par
@@ -288,9 +290,9 @@ during the 2011-2012 election cycle compared to the 2009-2010 election
 cycle and maintained their level of polarization in the 2013-2014
 election cycle.}
 
-If hypothesis one is found to be correct, these results would strengthen
-the evidence for politics donors being \emph{reactive} to their
-political environment as we would expect under Ansolabehere, de
+If the null to this hypothesis is rejected, these results would
+strengthen the evidence for politics donors being \emph{reactive} to
+their political environment as we would expect under Ansolabehere, de
 Figueiredo and Snyder's consumption model of political giving.
 
 Alternatively, if political donors are contributors to polarization, as
@@ -299,9 +301,9 @@ is suggested by some scholars, we would expect to see hypothesis 2.
 \textbf{\(H_{2}\): Polarization levels stays the same from 2009-2010
 compared to 2011-2012.}
 
-If hypothesis two is upheld, the result would suggest that political
-donors helped to create the polarized political environment that we see
-today.
+If the null to hypothesis two is rejected, the result would suggest that
+political donors helped to create the polarized political environment
+that we see today.
 
 In addition, this paper makes a methodological contribution to the field
 of political polarization studies by taking a network approach to
@@ -360,15 +362,16 @@ committees. I manually created a table of the parties of each of all the
 campaigns receiving contributions in this timeframe and added the party
 of the campaign receiving the donation to this dataset.
 
-I started with 1,499,603 donations. To clean the data, I filtered out
-3,503 unitemized/ anonymous donations , removed punctuation from the
-names of the donors, and used Open Refine via the \texttt{refiner} R
-package to standardize names (for example, Jim versus James). Next, I
-created a unique identifier for donors by combining their standardized
-name with their zip code. This identifier was created to be able to link
-donors who contributed across multiple campaigns in multiple years
-without considering two different people, with the same name, from
-different locations to be the same person.
+I started with 1,499,603 donations. I used the statistical programming
+language R (R Core Team 2013; RStudio Team 2020; Wickham et al. 2019), I
+filtered out 3,503 unitemized/ anonymous donations, removed punctuation
+from the names of the donors, and used Open Refine (Kelli 2013) via the
+\texttt{refinr} R package (Muir 2018) to standardize names (for example,
+Jim versus James). Next, I created a unique identifier for donors by
+combining their standardized name with their zip code. This identifier
+was created to be able to link donors who contributed across multiple
+campaigns in multiple years without considering two different people,
+with the same name, from different locations to be the same person.
 
 Next, I derived the partisanship of each donor in each election cycle. I
 calculated each donor's partisanship by taking the percent of donations
@@ -430,10 +433,11 @@ partisanship score (which is on a scale from -1 to 1). Therefore, the
 larger a donor's absolute the partisanship, the higher percentage of
 their money that they contributed to a single party. To calculate the
 significance in the difference of the mean absolute partisanship, I use
-a bootstrap methodology with 1000 replications. This paper uses a
-non-parametric permutation method because of the non-normal distribution
-of partisanship of the donors given that a strong majority (98\%) of
-donors across all election cycles only contribute to a single party.
+a bootstrap methodology with 1,000 replications using the \texttt{infer}
+R package (Bray et al. 2020). This paper uses a non-parametric
+permutation method because of the non-normal distribution of
+partisanship of the donors given that (98\%) of donors across all
+election cycles only contribute to a single party.
 
 To conduct a hypothesis test with a permutation, you first compute the
 mean for each group of the measure that you're interested in--in this
@@ -446,11 +450,12 @@ draws and compare them to your original sample mean (Wilcox 2003). This
 paper uses 1,000 replications, primarily to be able to calculate a
 p-value at the to thousandsths-level. A p-value for a permutation test
 is done by calculating the proportion of randomly drawn \(d's\) that are
-greater than the original \(d\) (Butar Butar and Park 2008). In essence,
-you figure out what proportion of your randomized draws have a sample
-mean that is greater or less than your observed data--how many
-randomized groupings having a result that is as or more extreme than
-your observed groups.
+greater than the original \(d\) (Butar and Park 2008). In essence, you
+figure out what proportion of your randomized draws have a sample mean
+that is greater or less than your observed data--how many randomized
+groupings having a result that is as or more extreme than your observed
+groups. If your p-value is below your pre-specified level (this paper
+uses the standard .05) you can reject the null hypothesis.
 
 The results of the bootstrap are found in Table 2.
 
@@ -459,13 +464,9 @@ The results of the bootstrap are found in Table 2.
 \hypertarget{tables}{%
 \section{Tables}\label{tables}}
 
-\hypertarget{table-1}{%
-\subsubsection{Table 1}\label{table-1}}
-
 \begin{longtable}[]{@{}lr@{}}
-\caption{Tbl. 1: Modularity calculation for the donor networks in each
-election cycle. Higher modularity means more
-polarization}\tabularnewline
+\caption{Modularity calculation for the donor networks in each election
+cycle. Higher modularity means more polarization.}\tabularnewline
 \toprule
 Election Cycle & Modularity\tabularnewline
 \midrule
@@ -474,20 +475,17 @@ Election Cycle & Modularity\tabularnewline
 Election Cycle & Modularity\tabularnewline
 \midrule
 \endhead
-2010 & 0.3987194\tabularnewline
-2012 & 0.4912346\tabularnewline
-2014 & 0.4797912\tabularnewline
+2010 & 0.3987150\tabularnewline
+2012 & 0.4912352\tabularnewline
+2014 & 0.4797860\tabularnewline
 \bottomrule
 \end{longtable}
 
 \newpage
 
-\hypertarget{table-2}{%
-\subsubsection{Table 2}\label{table-2}}
-
 \begin{longtable}[]{@{}lrll@{}}
-\caption{Tbl. 2: Bootstrapped difference-in-means test with 1,000
-replications comparing mean partisanship of donors.}\tabularnewline
+\caption{Bootstrapped difference-in-means test with 1,000 replications
+comparing mean partisanship of donors.}\tabularnewline
 \toprule
 Election Cycle & T & CI & p\tabularnewline
 \midrule
@@ -496,10 +494,10 @@ Election Cycle & T & CI & p\tabularnewline
 Election Cycle & T & CI & p\tabularnewline
 \midrule
 \endhead
-2012 compared to 2010 & 0.04210 & 0.04023---0.04393 &
+2012 compared to 2010 & 0.04210 & 0.0403---0.04395 &
 \textless.001\tabularnewline
-2014 compared to 2012 & -0.00027 & -0.00089---0.00032 &
-0.374\tabularnewline
+2014 compared to 2012 & -0.00028 & -0.00089---0.00032 &
+0.378\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -581,9 +579,15 @@ Bramlett, Brittany H., James G. Gimpel, and Frances E. Lee. 2011. ``The
 Political Ecology of Opinion in Big-Donor Neighborhoods.''
 \emph{Political Behavior} 33: 565--600.
 
+\leavevmode\hypertarget{ref-infer}{}%
+Bray, Andrew, Chester Ismay, Evgeni Chasnovski, Ben Baumer, Mine
+Cetinkaya-Rundel, Simon Couch, Ted Laderas, et al. 2020. \emph{Infer:
+Tidy Statistical Inference}.
+\url{https://cran.r-project.org/web/packages/infer/index.html}.
+
 \leavevmode\hypertarget{ref-butar2008}{}%
-Butar Butar, Ferry, and Jae-Wan Park. 2008. ``Permutation Tests for
-Comparing Two Populations.'' \emph{MSME} 3 (September): 19--30.
+Butar, Ferry, and Jae-Wan Park. 2008. ``Permutation Tests for Comparing
+Two Populations.'' \emph{MSME} 3 (September): 19--30.
 
 \leavevmode\hypertarget{ref-pew2017}{}%
 Center, Pew Research. 2017. ``The Partisan Divide on Political Values
@@ -674,6 +678,10 @@ Keena, Alex, and Misty Knight-Finley. 2019. ``Are Small Donors
 Polarizing? A Longitudinal Study of the Senate.'' \emph{Election Law
 Journal: Rules, Politics, and Policy} 18 (2): 132--44.
 
+\leavevmode\hypertarget{ref-openrefine}{}%
+Kelli, Ham. 2013. ``OpenReinfe (Version 2.5).'' \emph{Journal of the
+MEdical Library Association} 101 (3): 233--34.
+
 \leavevmode\hypertarget{ref-kitchens2016}{}%
 Kitchens, Karin E., and Michele L. Swers. 2016. ``Why Aren't There More
 Republican Women in Congress? Gender, Partisanship, and Fundraising
@@ -699,6 +707,11 @@ McCarty, Nolan, Keith T. Poole, and Howard Rosenthal. 2006.
 \emph{Polarizaed America: The Dancedance of Ideology and Unequal
 Riches}. Cambridge, Mass: MIT Press.
 
+\leavevmode\hypertarget{ref-refinr}{}%
+Muir, Chris. 2018. \emph{Refinr: Cluster and Merge Similar Values Within
+a Character Vector}.
+\url{https://cran.r-project.org/web/packages/refinr/index.html}.
+
 \leavevmode\hypertarget{ref-newman2006}{}%
 Newman, M. E. J. 2006. ``Modularity and Community Structure in
 Networks.'' \emph{Proceedings of the National Academy of Sciences} 103
@@ -716,10 +729,19 @@ Ideological Polarization of Political Parties: Ideological Change and
 Stability Among Political Contributors, 1972-2008.'' \emph{American
 Politics Research} 40 (3): 501--30.
 
+\leavevmode\hypertarget{ref-r}{}%
+R Core Team. 2013. \emph{R: A Language and Environment for Statistical
+Computing}. Vienna, Austria: R Foundation for Statistical Computing.
+\url{http://www.R-project.org/}.
+
 \leavevmode\hypertarget{ref-roscoe2005}{}%
 Roscoe, Douglas D., and Shannon Jenkins. 2005. ``A Meta-Analysis of
 Campaign Contributions' Impact on Roll Call Voting.'' \emph{Social
 Science Quartlery} 86 (1): 52--68.
+
+\leavevmode\hypertarget{ref-rstudio}{}%
+RStudio Team. 2020. \emph{RStudio: Integrated Development Environment
+for R}. Boston, MA: RStudio, PBC. \url{http://www.rstudio.com/}.
 
 \leavevmode\hypertarget{ref-sewell2011}{}%
 Sewell, Abby. 2011. ``Protesters Out in Force Nationwide to Oppose
@@ -751,6 +773,12 @@ Journal} 42 (December).
 Waugh, Andrew Scott, Liuyi Pei, James H. Fowler, Peter J. Mucha, and
 Mason Alexander Porter. n.d. ``Party Polarization in Congress: A Network
 Science Approach.''
+
+\leavevmode\hypertarget{ref-tidyverse}{}%
+Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy
+D'Agostino McGowan, Romain François, Garrett Grolemund, et al. 2019.
+``Welcome to the tidyverse.'' \emph{Journal of Open Source Software} 4
+(43): 1686. \url{https://doi.org/10.21105/joss.01686}.
 
 \leavevmode\hypertarget{ref-wilcox2003}{}%
 Wilcox, Rand R. 2003. ``8 - Comparing Two Independent Groups.'' In

@@ -6,7 +6,7 @@ output:
     fig_caption: true
     latex_engine: pdflatex
     template: ../svm-latex-ms.tex
-title: "Political Donor Polarization in Wisconsin"
+title: "Political Donor Polarization: Observing Consumptive Behavior using a Network Approach"
 thanks: "Code and data available at: github.com/rossdahlke"
 author:
 - name: Ross Dahlke
@@ -95,7 +95,7 @@ filtered_donations <- donations_2 %>%
   ungroup()
 ```
 
-I started with `r scales::comma(donations_n)` donations. To clean the data, I filtered out `r scales::comma(anon_donations_n)` unitemized/ anonymous donations , removed punctuation from the names of the donors, and used Open Refine via the `refiner` R package to standardize names (for example, Jim versus James). Next, I created a unique identifier for donors by combining their standardized name with their zip code. This identifier was created to be able to link donors who contributed across multiple campaigns in multiple years without considering two different people, with the same name, from different locations to be the same person.
+I started with `r scales::comma(donations_n)` donations. I used the statistical programming language R [@r; @rstudio; @tidyverse], I filtered out `r scales::comma(anon_donations_n)` unitemized/ anonymous donations, removed punctuation from the names of the donors, and used Open Refine [@openrefine] via the `refinr` R package [@refinr] to standardize names (for example, Jim versus James). Next, I created a unique identifier for donors by combining their standardized name with their zip code. This identifier was created to be able to link donors who contributed across multiple campaigns in multiple years without considering two different people, with the same name, from different locations to be the same person.
 
 Next, I derived the partisanship of each donor in each election cycle. I calculated each donor's partisanship by taking the percent of donations that each donor gave to Republicans divided by their donations to Republicans and Democrats. I took that "percent donated to Republicans" and rescaled it from -1 to 1, where -1 represents the most Democratic donors, and 1 the most Republican donors. I also calculated each individual's party bin: if more than 75% of donations were to Democrats, they were labeled as a Democrat; if more than 75% of donations were to Republicans, they were labeled as a Republican; if their donations were somewhere inbetween, they were labeled as being a bipartisan donor.
 
@@ -179,9 +179,9 @@ table_1 <- tibble(election_years) %>%
 
 In addition to calculating the change in modularity of each of the election cycles, I also analyzed the change in mean absolute partisanship of the donors in each election cycle. 
 
-I defined a donor's absolute partisanship as the absolute value of their partisanship score (which is on a scale from -1 to 1). Therefore, the larger a donor's absolute the partisanship, the higher percentage of their money that they contributed to a single party. To calculate the significance in the difference of the mean absolute partisanship, I use a bootstrap methodology with 1000 replications. This paper uses a non-parametric permutation method because of the non-normal distribution of partisanship of the donors given that a strong majority (`r scales::percent(by_donor %>% summarize(n = n(), partisan_1 = sum(abs_partisanship == 1)) %>% mutate(partisan_1_per = partisan_1 / n) %>% pull(partisan_1_per))`) of donors across all election cycles only contribute to a single party. 
+I defined a donor's absolute partisanship as the absolute value of their partisanship score (which is on a scale from -1 to 1). Therefore, the larger a donor's absolute the partisanship, the higher percentage of their money that they contributed to a single party. To calculate the significance in the difference of the mean absolute partisanship, I use a bootstrap methodology with 1,000 replications using the `infer` R package [@infer]. This paper uses a non-parametric permutation method because of the non-normal distribution of partisanship of the donors given that                  (`r scales::percent(by_donor %>% summarize(n = n(), partisan_1 = sum(abs_partisanship == 1)) %>% mutate(partisan_1_per = partisan_1 / n) %>% pull(partisan_1_per))`) of donors across all election cycles only contribute to a single party. 
 
-To conduct a hypothesis test with a permutation, you first compute the mean for each group of the measure that you're interested in--in this case we are calculating the mean partisanship of donors in two given election cycles. This is difference $d = \overline{X_{1}}-\overline{X_{2}}$. Next, you pool the data and randomly draw new groups of data of equal sizes of the original groups. You then calculate the difference in sample means from these random draws and compare them to your original sample mean [@wilcox2003]. This paper uses 1,000 replications, primarily to be able to calculate a p-value at the to thousandsths-level. A p-value for a permutation test is done by calculating the proportion of randomly drawn $d's$ that are greater than the original $d$ [@butar2008]. In essence, you figure out what proportion of your randomized draws have a sample mean that is greater or less than your observed data--how many randomized groupings having a result that is as or more extreme than your observed groups. 
+To conduct a hypothesis test with a permutation, you first compute the mean for each group of the measure that you're interested in--in this case we are calculating the mean partisanship of donors in two given election cycles. This is difference $d = \overline{X_{1}}-\overline{X_{2}}$. Next, you pool the data and randomly draw new groups of data of equal sizes of the original groups. You then calculate the difference in sample means from these random draws and compare them to your original sample mean [@wilcox2003]. This paper uses 1,000 replications, primarily to be able to calculate a p-value at the to thousandsths-level. A p-value for a permutation test is done by calculating the proportion of randomly drawn $d's$ that are greater than the original $d$ [@butar2008]. In essence, you figure out what proportion of your randomized draws have a sample mean that is greater or less than your observed data--how many randomized groupings having a result that is as or more extreme than your observed groups. If your p-value is below your pre-specified level (this paper uses the standard .05) you can reject the null hypothesis.
 
 The results of the bootstrap are found in Table 2.
 
@@ -191,6 +191,8 @@ diff_boostrap <- function(year_1 = "2014",
                           replications = 100) {
   year_1 <- as.character(year_1)
   year_2 <- as.character(year_2)
+  
+  set.seed(1)
   
   bootstrap <- by_donor %>% 
     filter(election_year %in% c(year_1, year_2)) %>% 
@@ -237,22 +239,18 @@ table_2 <- cbind(election_years_expanded,
 
 # Tables
 
-### Table 1
-
 ```{r include = T, echo = F}
 table_1 %>% 
   knitr::kable(col.names = c("Election Cycle", "Modularity"),
-               caption = "Tbl. 1: Modularity calculation for the donor networks in each election cycle. Higher modularity means more polarization")
+               caption = "Modularity calculation for the donor networks in each election cycle. Higher modularity means more polarization.")
 ```
 
 \newpage
 
-### Table 2
-
 ```{r include = T, echo = F}
 table_2 %>%
   knitr::kable(col.names = c("Election Cycle", "T", "CI", "p"),
-               caption = "Tbl. 2: Bootstrapped difference-in-means test with 1,000 replications comparing mean partisanship of donors.")
+               caption = "Bootstrapped difference-in-means test with 1,000 replications comparing mean partisanship of donors.")
 ```
 
 \newpage
