@@ -24,7 +24,7 @@ biblio-style: apsr
 
 Political campaign finance plays an important role in the American political system. This significance is evidenced by the attention that academic researchers pay to the topic as well as the many different contexts in which campaign finance is studied. For example, research has been conducted on the impact of political donations on roll-call voting in the U.S. Congress [@roscoe2005; @stratmann1991], gender representation in political parties [@crowder-meyer2018; @barber2016b; @kitchens2016; @thomsen2017], ability to win political campaigns [@bonica2017; @bonneau2007], the connection between money raised and public attention [@ellis2017], judicial function [@palmer2008], perceptions of corruption [@bowler2015], political economy and stock returns [@akey2015; @garro2020; @cooper2010], and the significant amount of time that candidates and legislators devote to fundraising [@torres-spelliscy2017]. 
 
-Even though political donors are believed to play an out-sized role in democracy, the psychological processes of donors is thought to be similar to voters. Political donations can be thought of an extension of voting. In other words, both actions are political consumption that seek to improve their preferred candidate's chances of winning. Ansolabehere, de Figueiredo and Snyder summarized this idea by stating, "In our view, campaign contributing should not be viewed as an investment, but rather as a form of consumption--or, in the language of politics, participation" [@ansolabehere2003]. Donations can be seen as an outlet for motivated citizens to increase their participation beyond just turning out to vote when they perceive the stakes of elections to be high [@hill2017].
+Even though political donors are believed to play an out-sized role in democracy, the psychological processes of donors is thought to be similar to voters. Political donations can be thought of an extension of voting. In other words, both actions are political consumption that seek to improve their preferred candidate's chances of winning. Ansolabehere, de Figueiredo and Snyder summarized this idea by stating, "In our view, campaign contributing should not be viewed as an investment, but rather as a form of consumption--or, in the language of politics, participation" [-@ansolabehere2003]. Donations can be seen as an outlet for motivated citizens to increase their participation beyond just turning out to vote when they perceive the stakes of elections to be high [@hill2017].
 
 The folk-theory of political donors is of smokey backrooms and access-oriented donors who seek to have a direct influence on policy making. However, even when donors contribute to legislators that maximize their economic interests, donations are not found to be motivated by existing policy agreements and not an expectation of access [@barber2016c]. Even donations from business executives have been found to be "best understood as purchases of 'good will' whose returns, while positive in expectation, are contingent and rare" [@gordon2007].
 
@@ -245,6 +245,14 @@ One limitation of a modularity calculation is that it does not quantify uncertai
 
 With the results of the modularity calculations and the hypothesis tests, I reject the null of $H_{1}$ and fail to reject the null of the alternative $H_{2}$. In other words, political donors in Wisconsin had a statistically significant increase in polarization in the 2012 election cycle--the same time as when other scholars and experts point towards the mass polarization of the state. 
 
+# Discussion
+
+The failure to reject the null of $H_{1}$ suggests that political donors were likely not the main contributors to the extreme levels of polarization first seen in the state in 2012. Other factors such as Governor Scott Walker's Act 10 and a more polarized primary electorate in the wake of the Tea Party in 2010, as studied by Jacobson [-@jacobson2012], electing Governor Walker in the first place, appear to be the contributors to mass polarization in addition to political donors, at least in Wisconsin. 
+
+These results also provide evidence for the 'consumption' model of political donations. Ansolabehere, de Figueiredo and Syder's [-@ansolabehere2003] conclusion that political donations are similar to voting in that they are both acts of political consumption are borne out in the results of this paper. Polarization of political donors happened in unison with the polarization of the electorate. The conclusion that we can draw is that the polarization of these two groups of people were a behavioral, participatory response to a changing political environment. Both the electorate and donors have specific acts of political consumption (voting and donating, respectively) that both impacted in the same way at the same time. 
+
+Further evidence for this consumption model is the idea that political donations are an extension of voting in the broader realm of political participation. Descriptively, we can observe that there was a mass influx of new political donors in 2012 and 2014 (see Figure 2). This inflow of donors suggests that the same mechanism that triggered mass polarization also spurred members of the mass electorate to go beyond voting and make a political contribution. Previous research by Oklobdzija [-@oklobzija] found a similar conclusion that "politically polarizing events bear dividends for extremist lawmakers" in California who raised more money as a result of polarizing political events. In short, it appears that political donations are an extension of voting, an outlet for political participation when individuals perceive the stakes of the election to be high, as concluded by Hill and Huber [-@hill2017]. And so it would be reasonable to find that political donors are not the cause of political polarization. But in fact, more polarized donors are a reflection of polariztion seen elsewhere in American politics.
+
 \newpage 
 
 # Tables
@@ -273,5 +281,10 @@ table_2 %>%
 knitr::include_graphics("../figures/fig1.png")
 ```
 
+### Figure 2
+
+```{r include = T, echo = F, fig.cap = Sankey diagram of the flow of political donors in 2010, 2012, and 2014 election cycles in Wisconsin. The vertical bars are proportional to the number of donors in each bin."}
+knitr::include_graphics("../figures/fig2.png")
+```
 
 # References
