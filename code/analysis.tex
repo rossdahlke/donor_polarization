@@ -106,7 +106,7 @@ Network Approach \thanks{Code and data available at: github.com/rossdahlke}  }
 \hypersetup{breaklinks=true,
             bookmarks=true,
             pdfauthor={Ross Dahlke ()},
-             pdfkeywords = {state politics, political donations, network analysis, polarization},  
+             pdfkeywords = {polarization, political donations, network analysis, state politics},  
             pdftitle={Political Donor Polarization: Observing Consumptive Behavior using a
 Network Approach},
             colorlinks=true,
@@ -182,7 +182,7 @@ and provides evidence for the `consumption' model of political
 donations.
 
 
-\vskip 8.5pt \noindent \emph{Keywords}: state politics, political donations, network analysis, polarization \par
+\vskip 8.5pt \noindent \emph{Keywords}: polarization, political donations, network analysis, state politics \par
 
     \hbox{\vrule height .2pt width 39.14pc}
 
@@ -223,10 +223,10 @@ to improve their preferred candidate's chances of winning. Ansolabehere,
 de Figueiredo and Snyder summarized this idea by stating, ``In our view,
 campaign contributing should not be viewed as an investment, but rather
 as a form of consumption--or, in the language of politics,
-participation'' (Ansolabehere, Figueiredo, and Jr. 2003). Donations can
-be seen as an outlet for motivated citizens to increase their
-participation beyond just turning out to vote when they perceive the
-stakes of elections to be high (Hill and Huber 2017).
+participation'' (2003). Donations can be seen as an outlet for motivated
+citizens to increase their participation beyond just turning out to vote
+when they perceive the stakes of elections to be high (Hill and Huber
+2017).
 
 The folk-theory of political donors is of smokey backrooms and
 access-oriented donors who seek to have a direct influence on policy
@@ -365,16 +365,17 @@ of the parties of each of all the campaigns receiving contributions in
 this timeframe and added the party of the campaign receiving the
 donation to this dataset.
 
-I started with 1,499,603 donations. I used the statistical programming
-language R (R Core Team 2013; RStudio Team 2020; Wickham et al. 2019), I
-filtered out 3,503 unitemized/ anonymous donations, removed punctuation
-from the names of the donors, and used Open Refine (Kelli 2013) via the
-\texttt{refinr} R package (Muir 2018) to standardize names (for example,
-Jim versus James). Next, I created a unique identifier for donors by
-combining their standardized name with their zip code. This identifier
-was created to be able to link donors who contributed across multiple
-campaigns in multiple years without considering two different people,
-with the same name, from different locations to be the same person.
+To clean and analyze my data I used the statistical programming language
+R (R Core Team 2013; RStudio Team 2020; Wickham et al. 2019). I started
+with 1,499,603 donations. I then filtered out 3,503 unitemized/
+anonymous donations, removed punctuation from the names of the donors,
+and used Open Refine (Kelli 2013) via the \texttt{refinr} R package
+(Muir 2018) to standardize names (for example, Jim versus James). Next,
+I created a unique identifier for donors by combining their standardized
+name with their zip code. This identifier was created to be able to link
+donors who contributed across multiple campaigns in multiple years
+without considering two different people, with the same name, from
+different locations to be the same person.
 
 Next, I derived the partisanship of each donor in each election cycle. I
 calculated each donor's partisanship by taking the percent of donations
@@ -439,8 +440,8 @@ significance in the difference of the mean absolute partisanship, I use
 a bootstrap methodology with 1,000 replications using the \texttt{infer}
 R package (Bray et al. 2020). This paper uses a non-parametric
 permutation method because of the non-normal distribution of
-partisanship of the donors given that (98\%) of donors across all
-election cycles only contribute to a single party.
+partisanship of the donors given that 98\% of donors across all election
+cycles only contribute to a single party.
 
 To conduct a hypothesis test with a permutation, you first compute the
 mean for each group of the measure that you're interested in--in this
@@ -462,6 +463,94 @@ uses the standard .05) you can reject the null hypothesis.
 
 The results of the bootstrap are found in Table 2.
 
+\hypertarget{results}{%
+\section{Results}\label{results}}
+
+The results of this analysis show that political donors in Wisconsin
+polarized during the 2012 election cycle, the same time that mass
+polarization occurred in the state. This phenomenon is best visualized
+in Figure 1. This figure uses the Yifan Hu layout algorithm (Hu 2005) in
+the Gephi software (Bastian, Heymann, and Jacomy 2009), a force-directed
+graphical layout of networks that seeks to repulse clusters of nodes
+from one another. The Yifan Hu layout algorithm is a standard among
+social scientists studying networks such as online networks (Rehman et
+al. 2020; Adalat, Niazi, and Vasilakos 2018; Khonsari et al. 2010;
+Hemsley et al. 2015). This visual representation shows two distinct
+clusters of donors (Democrats and Republicans) that are reasonably close
+to one another in the 2010 election cycle and then polarize
+significantly in the 2012 election cycle and remain polarized in 2014.
+
+This graphical representation is an accurate depiction of statistical
+measures of polarization within the networks. Table 1 show the
+modularity of the networks in the 2010, 2012, and 2014 election cycles.
+In 2010, the modularity of the donor network is 0.4. The modularity for
+the 2012 cycle climbs to 0.49 and settles in during the 2014 cycle at
+0.48. The interpretation of modularity is the higher the number, the
+more observed polarization within the network. As such, the rise in
+modularity in the 2012 cycle depicts polarization within the donor
+network in 2012 compared to 2010. And then the steady modularity in the
+2014 cycle reveals a stabilization of the level of polarization observed
+in the 2012 election cycle.
+
+One limitation of a modularity calculation is that it does not quantify
+uncertainty. To validate the results of the modularity calculation, I
+conducted a hypothesis test. Table 2 compares the average absolute donor
+partisanship in 2012 compared to 2010 and 2014 compared to 2012. As the
+table shows, donors in the 2012 election cycle became much more partisan
+with an average change of absolute of partisanship of 0.04213 (CI =
+0.04027-0.04415, p-value = \textless.001). While there was not a
+statistically signiciant change in mean absolute partisanship in the
+2014 election cycle compared to the 2012 election cycle (0.04213, CI =
+0.04027-0.04415, p-value = \textless.001).
+
+With the results of the modularity calculations and the hypothesis
+tests, I reject the null of \(H_{1}\) and fail to reject the null of the
+alternative \(H_{2}\). In other words, political donors in Wisconsin had
+a statistically significant increase in polarization in the 2012
+election cycle--the same time as when other scholars and experts point
+towards the mass polarization of the state.
+
+\hypertarget{discussion}{%
+\section{Discussion}\label{discussion}}
+
+The failure to reject the null of \(H_{1}\) suggests that political
+donors were likely not the main contributors to the extreme levels of
+polarization first seen in the state in 2012. Other factors such as
+Governor Scott Walker's Act 10 and a more polarized primary electorate
+in the wake of the Tea Party in 2010, as studied by Jacobson (2012),
+electing Governor Walker in the first place, appear to be the
+contributors to mass polarization in addition to political donors, at
+least in Wisconsin.
+
+These results also provide evidence for the `consumption' model of
+political donations. Ansolabehere, de Figueiredo and Syder's (2003)
+conclusion that political donations are similar to voting in that they
+are both acts of political consumption are borne out in the results of
+this paper. Polarization of political donors happened in unison with the
+polarization of the electorate. The conclusion that we can draw is that
+the polarization of these two groups of people were a behavioral,
+participatory response to a changing political environment. Both the
+electorate and donors have specific acts of political consumption
+(voting and donating, respectively) that both impacted in the same way
+at the same time.
+
+Further evidence for this consumption model is the idea that political
+donations are an extension of voting in the broader realm of political
+participation. Descriptively, we can observe that there was a mass
+influx of new political donors in 2012 and 2014 (see Figure 2). This
+inflow of donors suggests that the same mechanism that triggered mass
+polarization also spurred members of the mass electorate to go beyond
+voting and make a political contribution. Previous research by Oklobzija
+(2016) found a similar conclusion that ``politically polarizing events
+bear dividends for extremist lawmakers'' in California who raised more
+money as a result of polarizing political events. In short, it appears
+that political donations are an extension of voting, an outlet for
+political participation when individuals perceive the stakes of the
+election to be high, as concluded by Hill and Huber (2017). And so it
+would be reasonable to find that political donors are not the cause of
+political polarization. But in fact, more polarized donors are a
+reflection of polariztion seen elsewhere in American politics.
+
 \newpage
 
 \hypertarget{tables}{%
@@ -478,9 +567,9 @@ Election Cycle & Modularity\tabularnewline
 Election Cycle & Modularity\tabularnewline
 \midrule
 \endhead
-2010 & 0.3987268\tabularnewline
-2012 & 0.4912362\tabularnewline
-2014 & 0.4797873\tabularnewline
+2010 & 0.3987235\tabularnewline
+2012 & 0.4912345\tabularnewline
+2014 & 0.4797875\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -497,10 +586,10 @@ Election Cycle & T & CI & p\tabularnewline
 Election Cycle & T & CI & p\tabularnewline
 \midrule
 \endhead
-2012 compared to 2010 & 0.04215 & 0.04032---0.04393 &
+2012 compared to 2010 & 0.04213 & 0.04027-0.04415 &
 \textless.001\tabularnewline
-2014 compared to 2012 & -0.00029 & -0.00091---3e-04 &
-0.348\tabularnewline
+2014 compared to 2012 & -0.00027 & -0.00084-0.00029 &
+0.352\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -521,11 +610,27 @@ Percentages on the bars reprsent the percent of donors in each party
 bin.}
 \end{figure}
 
+\hypertarget{figure-2}{%
+\subsubsection{Figure 2}\label{figure-2}}
+
+\begin{figure}
+\centering
+\includegraphics{../figures/fig2.png}
+\caption{Sankey diagram of the flow of political donors in 2010, 2012,
+and 2014 election cycles in Wisconsin. The vertical bars are
+proportional to the number of donors in each bin.}
+\end{figure}
+
 \hypertarget{references}{%
 \section*{References}\label{references}}
 \addcontentsline{toc}{section}{References}
 
 \hypertarget{refs}{}
+\leavevmode\hypertarget{ref-adalat2018}{}%
+Adalat, Mohsin, Muaz A. Niazi, and Athanasios V. Vasilakos. 2018.
+``Variations in Power of Opinion Leaders in Online Communication
+Networks.'' \emph{Royal Society Open Science} 5 (10).
+
 \leavevmode\hypertarget{ref-akey2015}{}%
 Akey, Pat. 2015. ``Valuing Changes in Political Networks: Evidence from
 Campaign Contributions to Close Congressional Elections.'' \emph{The
@@ -546,6 +651,11 @@ Barber, Michael J., Brandice Canes-Wrone, and Sharece Thrower. 2016.
 ``Ideologically Sophisticated Donors: Which Candidates Do Individual
 Contributors Finance.'' \emph{American Journal of Political Science} 61
 (2): 1057--72.
+
+\leavevmode\hypertarget{ref-gephi}{}%
+Bastian, Mathieu, Sebastien Heymann, and Mathieu Jacomy. 2009. ``Gephi:
+An Open Source Software for Exploring and Manipulating Networks.''
+\url{http://www.aaai.org/ocs/index.php/ICWSM/09/paper/view/154}.
 
 \leavevmode\hypertarget{ref-blake2012}{}%
 Blake, Aaron. 2012. ``Scott Walker Said Budget Strategy in Wisconsin Was
@@ -663,10 +773,27 @@ Harden, Jeffrey J., and Justin H. Kirkland. 2016. ``Do Campaign Donors
 Influence Polarization? Evidence from Public Financing in the American
 States.'' \emph{Legislative Studies Quarterly} 41 (1): 119--1542.
 
+\leavevmode\hypertarget{ref-hemsley2015}{}%
+Hemsley, Bronwyn, Stephen Dann, Stuart Palmer, Meredith Allan, and Susan
+Balandin. 2015. ```We Definitely Need an Audience': Experiences of
+Twitter, Twitter Networks and Tweet Content in Adults with Severe
+Communication Disabilities Who Use Augmentative and Alternative
+Communication (Aac).'' \emph{Disability and Rehabilitation} 37 (17):
+1531--42. \url{https://doi.org/10.3109/09638288.2015.1045990}.
+
 \leavevmode\hypertarget{ref-hill2017}{}%
 Hill, Seth J., and Gregory A. Huber. 2017. ``Representativeness and
 Motivations of the Contemporary Donorate: Results from Merged Survey and
 Administrative Records.'' \emph{Political Behavior} 39 (March): 3--29.
+
+\leavevmode\hypertarget{ref-yifanhu}{}%
+Hu, Yifan. 2005. ``Efficient, High-Quality Force-Directed Graph
+Drawing.'' \emph{Mathematica Journal} 10 (1): 37--71.
+
+\leavevmode\hypertarget{ref-jacobson2012}{}%
+Jacobson, Gary C. 2012. ``The Electoral Origins of Polarized Politics:
+Evidence from the 2010 Cooperative Congressional Election Study.''
+\emph{American Behavioral Scientist} 56 (12): 1612--30.
 
 \leavevmode\hypertarget{ref-kaufman2012}{}%
 Kaufman, Dan. 2012. ``How Did Wisconsin Become the Most Politically
@@ -679,7 +806,13 @@ Journal: Rules, Politics, and Policy} 18 (2): 132--44.
 
 \leavevmode\hypertarget{ref-openrefine}{}%
 Kelli, Ham. 2013. ``OpenReinfe (Version 2.5).'' \emph{Journal of the
-MEdical Library Association} 101 (3): 233--34.
+Medical Library Association} 101 (3): 233--34.
+
+\leavevmode\hypertarget{ref-khonsari2010}{}%
+Khonsari, K. K., Z. A. Nayeri, A. Fathalian, and L. Fathalian. 2010.
+``Social Network Analysis of Iran's Green Movement Opposition Groups
+Using Twitter.'' In \emph{2010 International Conference on Advances in
+Social Networks Analysis and Mining}, 414--15.
 
 \leavevmode\hypertarget{ref-kitchens2016}{}%
 Kitchens, Karin E., and Michele L. Swers. 2016. ``Why Aren't There More
@@ -716,6 +849,11 @@ Newman, M. E. J. 2006. ``Modularity and Community Structure in
 Networks.'' \emph{Proceedings of the National Academy of Sciences} 103
 (23): 8577--82. \url{https://doi.org/10.1073/pnas.0601602103}.
 
+\leavevmode\hypertarget{ref-oklobzija}{}%
+Oklobdzija, Stan. 2016. ``Closing down and Cashing in: Extremism and
+Political Fundraising.'' \emph{State Politics \& Policy Quarterly} 17
+(2): 201--24.
+
 \leavevmode\hypertarget{ref-palmer2008}{}%
 Palmer, Vernon Valentine, and John Levendis. 2008. ``The Louisiana
 Supreme Court in Question: An Empirical and Statistical Study of the
@@ -736,6 +874,12 @@ Politics Research} 40 (3): 501--30.
 R Core Team. 2013. \emph{R: A Language and Environment for Statistical
 Computing}. Vienna, Austria: R Foundation for Statistical Computing.
 \url{http://www.R-project.org/}.
+
+\leavevmode\hypertarget{ref-rehman2020}{}%
+Rehman, Ateeq Ur, Aimin Jiang, Abdul Rehman, Anand Paul, Sadia din, and
+Muhammad Tariq Sadiq. 2020. ``Identification and Role of Opinion Leaders
+in Information Diffusion for Online Discussion Network.'' \emph{Journal
+of Ambient Intelligence and Humanized Computing}, January.
 
 \leavevmode\hypertarget{ref-roscoe2005}{}%
 Roscoe, Douglas D., and Shannon Jenkins. 2005. ``A Meta-Analysis of
