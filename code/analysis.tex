@@ -41,15 +41,6 @@
 
 \usepackage{longtable,booktabs}
 
-\usepackage{graphicx,grffile}
-\makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 
 
 \title{Political Donor Polarization: Observing Consumptive Behavior using a
@@ -83,6 +74,7 @@ Network Approach \thanks{Code and data available at: github.com/rossdahlke}  }
 \def\fps@figure{htbp}
 \makeatother
 
+\usepackage{graphicx}
 
 % move the hyperref stuff down here, after header-includes, to allow for - \usepackage{hyperref}
 
@@ -168,18 +160,17 @@ Network Approach},
 
 \noindent American politics has recently been defined by unprecedented levels of
 partisan polarization. Given the concurrent rise of the amount of money
-in politics, there is a natural connection that many people make between
-money in politics and polarization. This paper uses the occurence of a
-specific polarizing event, former Wisconsin Governor Scott Walker's
-introduction and passage of Act 10, to analyze the relationship between
-donor polarization and mass polarization. Using political donation data
-from the Wisconsin Campaign Finance Information System (CFIS) and using
-the network science measure of modularity, this paper shows that
-political donor networks polarized during the 2012 election cycle at the
-same time as the electorate. This result suggests that political donors
-were likely not the main contributors to the polarization in the state
-and provides evidence for the `consumption' model of political
-donations.
+in politics, many have suggested a connection between money in politics
+and polarization. This paper uses the occurence of a specific polarizing
+event, former Wisconsin Governor Scott Walker's introduction and passage
+of Act 10, to analyze the relationship between donor polarization and
+mass polarization. Using political donation data from the Wisconsin
+Campaign Finance Information System (CFIS) and using the network science
+measure of modularity, this paper shows that political donor networks
+polarized during the 2012 election cycle at the same time as the
+electorate. This result suggests that political donors were likely not
+the main contributors to the polarization in the state and provides
+evidence for the `consumption' model of political donations.
 
 
 \vskip 8.5pt \noindent \emph{Keywords}: polarization, political donations, network analysis, state politics \par
@@ -217,16 +208,16 @@ time that candidates and legislators devote to fundraising
 
 Even though political donors are believed to play an out-sized role in
 democracy, the psychological processes of donors is thought to be
-similar to voters. Political donations can be thought of an extension of
-voting. In other words, both actions are political consumption that seek
-to improve their preferred candidate's chances of winning. Ansolabehere,
-de Figueiredo and Snyder summarized this idea by stating, ``In our view,
-campaign contributing should not be viewed as an investment, but rather
-as a form of consumption--or, in the language of politics,
-participation'' (2003). Donations can be seen as an outlet for motivated
-citizens to increase their participation beyond just turning out to vote
-when they perceive the stakes of elections to be high (Hill and Huber
-2017).
+similar to ordinary voters. Political donations can be thought of an
+extension of voting. In other words, both actions are political
+consumption that seek to improve a preferred candidate's chances of
+winning. Ansolabehere, de Figueiredo and Snyder summarized this idea by
+stating, ``In our view, campaign contributing should not be viewed as an
+investment, but rather as a form of consumption--or, in the language of
+politics, participation'' (2003). Donations can be seen as an outlet for
+motivated citizens to increase their participation beyond just turning
+out to vote when they perceive the stakes of elections to be high (Hill
+and Huber 2017).
 
 The folk-theory of political donors is of smokey backrooms and
 access-oriented donors who seek to have a direct influence on policy
@@ -246,31 +237,33 @@ professional and managerial jobs are less likely to be politically
 engaged, including making political donations (Laurison 2016). Donors to
 the Democratic and Republican parties were summarized as being
 ``Limousine Liberals'' and ``Corporate Conservatives'' (Francia et al.
-2005).In addition, Democrats and Republicans draw their bases of
-electoral support from different geographic bases. However, major
-campaign donors are highly concentrated geographically. These
-``big-donor neighborhoods'' are unrepresentative of the country as a
-whole and point to these communities having a distinct political culture
-(Bramlett, Gimpel, and Lee 2011). In both parties, donors are more
-ideologically extreme than non-donating voters, even among primary
-voters (Hill and Huber 2017; Francia et al. 2003). Even wealthy donors
-who make up the ``big money'' in politics are very partisan (McCarty,
-Poole, and Rosenthal 2006).
+2005). In addition, while Democrats and Republicans draw their bases of
+electoral support from different geographic bases, major campaign donors
+are highly concentrated geographically. These ``big-donor
+neighborhoods'' are unrepresentative of the country as a whole and point
+to these communities having a distinct political culture (Bramlett,
+Gimpel, and Lee 2011). In both parties, donors are more ideologically
+extreme than non-donating voters (Hill and Huber 2017; Francia et al.
+2003) and wealthy donors who make up the ``big money'' in politics are
+especially partisan (McCarty, Poole, and Rosenthal 2006).
 
 This ideological extremity shown by political donors has led some
 scholars to suggest that political donors are contributors to the
 partisan polarization of the politics of the United States (Francia et
-al. 2005). This speculation that that political donors are contributors
-of polarization is bolstered by the observation that both political
+al. 2005). This idea is supported by the observation that both political
 polarization and campaign spending have risen in conjunction (McCarty,
 Poole, and Rosenthal 2006). However, there little evidence for the
-causal relationship of donors causing political polarization. And many
-have concluded that political donations don't influence polarization
-(Harden and Kirkland 2016; Raja and Wiltse 2012; Keena and Knight-Finley
-2019). Furthermore, it is likely the case that the causal arrow flows
-the other direction, and it is more polarized candidates and electorate
-that have led to more polarized donors (Harden and Kirkland 2016; Raja
-and Wiltse 2012; Keena and Knight-Finley 2019).
+causal relationship of donors causing political polarization. Many have
+found that political donations don't influence polarization (Harden and
+Kirkland 2016; Raja and Wiltse 2012; Keena and Knight-Finley 2019).
+Furthermore, it is likely the case that the causal arrow flows the other
+direction, and it is a more polarized electorate and candidates that
+have led to more polarized donors (Harden and Kirkland 2016; Raja and
+Wiltse 2012; Keena and Knight-Finley 2019).
+
+{[}Add in section about consequences of polarized donors / why is it
+inmportant that we understand what is causing greater donor
+polarization{]}
 
 Studying polarization, particularly among political donors can be
 difficult because of the myriad of potential confounding factors that
@@ -279,47 +272,47 @@ polarization is generally a phenomenon that gradually increases or
 decreases over time (Pew Research Center 2017). However, this paper
 leverages a singular event, former Wisconsin Governor Scott Walker's
 proposition and passage of Act 10, a ``budget repair bill'' that ended
-collective bargaining for teachers unions and the subsequent protests
-and recall election, to examine political donor polarization in the
-state of Wisconsin. Given the recent research which has pointed to the
-polarization of political donors as being \emph{reactive} instead of
-\emph{causal} to broader polarization, we could expect political donors
-to follow the trend of voters and polarize after introduction of Act 10
-and subsequent events.
+collective bargaining for teachers unions, to examine political donor
+polarization in the state of Wisconsin. Given the recent research which
+has pointed to the polarization of political donors as being
+\emph{reactive} instead of \emph{causal} to broader polarization, we
+could expect political donors to follow the trend of voters and polarize
+after introduction of Act 10 and subsequent events.
 
 \textbf{\(H_{1}\): Political donors in the State of Wisconsin polarized
 during the 2011-2012 election cycle compared to the 2009-2010 election
 cycle and maintained their level of polarization in the 2013-2014
 election cycle.}
 
-If the null to this hypothesis is rejected, these results would
-strengthen the evidence for politics donors being \emph{reactive} to
-their political environment as we would expect under Ansolabehere, de
-Figueiredo and Snyder's consumption model of political giving.
+If this hypothesis is supported, these results would strengthen the
+evidence for politics donors being \emph{reactive} to their political
+environment as we would expect under Ansolabehere, de Figueiredo and
+Snyder's consumption model of political giving.
 
-Alternatively, if political donors are contributors to polarization, as
-is suggested by some scholars, we would expect to see hypothesis 2.
+Alternatively, if political donors are instead \emph{contributors} to
+mass and legislative polarization, as is suggested by some scholars, we
+would expect to see hypothesis 2.
 
-\textbf{\(H_{2}\): Polarization levels stays the same from 2009-2010
-compared to 2011-2012.}
+\textbf{\(H_{2}\): Polarization levels stay the same in 2011-2012
+compared to 2009-2010.}
 
-If the null to hypothesis two is rejected, the result would suggest that
-political donors helped to create the polarized political environment
-that we see today.
+If hypothesis two is supported, the result would suggest that political
+donors helped to create the polarized political environment that we see
+today.
 
-In addition, this paper makes a methodological contribution to the field
-of political polarization studies by taking a network approach to
-measuring polarization to similar to studies of congressional
-polarization (Waugh et al., n.d.; Zhang et al. 2008) and polarization in
-social media networks (Guerra et al. 2013; Garcia et al. 2015; Conover
-et al. 2011) and uses modularity as a measure of polarization within
-political donor networks. This paper conceives of the political donor
+In addition, this paper makes a methodological contribution to campaign
+finance research by taking a network approach to measuring donor
+polarization by using modularity as a measure of polarization. This
+method has been used elsewhere in the social sciences to study
+congressional polarization (Waugh et al., n.d.; Zhang et al. 2008) and
+polarization in social media networks (Guerra et al. 2013; Garcia et al.
+2015; Conover et al. 2011). This paper conceives of the political donor
 landscape of donors and candidates acting as nodes who are connected by
-donations made that act as edges. This method is important in studying
+donations that act as edges. This method is important in studying
 political donor networks because it takes into consideration real-world
-actions, such as in the study of polarization among member of congress
-where voting records (Guerra et al. 2013) and co-sponsorships (Zhang et
-al. 2008), which are used to study polarization opposed to surveys
+actions, such as in network studies of polarization among member of
+congress where voting records (Guerra et al. 2013) and co-sponsorships
+(Zhang et al. 2008) are used to study polarization opposed to surveys
 administered to donors that rely on self-reported ideology and
 partisanship.
 
@@ -327,21 +320,21 @@ partisanship.
 \section{Wisconsin Context}\label{wisconsin-context}}
 
 Both Wisconsin's legislators and mass public are among the most
-polarized in the nation (Cramer 2016) and has been used by academics as
-an example of how political actions change in contenious and divisive
-environments (Bode et al. 2018). Although many state legislatures are
-also experiencing polarization (Shor 2015), Wisconsin is unique in that
-there is a single event that many point to in creating ``the most
-politically divisive place in America'' (Kaufman 2012).
+polarized in the nation (Cramer 2016), and the state been used by
+academics to examine how political actions unfold in contentious and
+highly divisive environment (Bode et al. 2018). Although many state
+legislatures are also experiencing polarization (Shor 2015), Wisconsin
+is unique in that there is a single event that many point to in creating
+``the most politically divisive place in America'' (Kaufman 2012).
 
 In 2011, newly-elected Republican Governor Scott Walker introduced Act
-10, a ``budget reconciliation bill'' that among other cuts to funding,
-stripped public school teachers of collective bargaining via their
-union. Up to 100,000 protested this ``anti-union bill'' at the State
-Capitol and even occupied the capitol building for a period of time
-(Sewell 2011). Democratic lawmakers fled to Illinois in an effort to
-delay or stop the bill from passing into law (Layton 2011). In 2012
-there was an unsuccessful election to recall Governor Walker.
+10, a ``budget reconciliation bill'' that stripped public school
+teachers of collective bargaining via their union. Up to 100,000 people
+protested this ``anti-union bill'' at the State Capitol and even
+occupied the capitol building for a period of time (Sewell 2011).
+Democratic lawmakers fled to Illinois in an effort to delay or stop the
+bill from passing into law (Layton 2011). In 2012 there was an
+unsuccessful election to recall Governor Walker.
 
 Wisconsin Governor Scott Walker's self-anointed ``divide and conquer''
 politics (Blake 2012) has left a political divide in Wisconsin that
@@ -351,6 +344,8 @@ Law School poll headed by Charles Franklin has called public opinion in
 Wisconsin a ``lesson in the two worlds of Wisconsin'' where ``it seems
 often as if people have not only differing opinions but differing views
 of facts and realities'' (Borsuk 2017).
+
+{[}Why Wisconsin is especially good for studying your question{]}
 
 \hypertarget{methodology}{%
 \section{Methodology}\label{methodology}}
@@ -366,28 +361,27 @@ this timeframe and added the party of the campaign receiving the
 donation to this dataset.
 
 To clean and analyze my data I used the statistical programming language
-R (R Core Team 2013; RStudio Team 2020; Wickham et al. 2019). I started
-with 1,499,603 donations. I then filtered out 3,503 unitemized/
-anonymous donations, removed punctuation from the names of the donors,
-and used Open Refine (Kelli 2013) via the \texttt{refinr} R package
-(Muir 2018) to standardize names (for example, Jim versus James). Next,
-I created a unique identifier for donors by combining their standardized
-name with their zip code. This identifier was created to be able to link
-donors who contributed across multiple campaigns in multiple years
-without considering two different people, with the same name, from
-different locations to be the same person.
+R (R Core Team 2013; Wickham et al. 2019). I started with 1,499,603
+donations. I then filtered out 3,503 unitemized/ anonymous donations,
+removed punctuation from the names of the donors, and used Open Refine
+(Kelli 2013) via the \texttt{refinr} R package (Muir 2018) to
+standardize names (for example, Jim versus James). Next, I created a
+unique identifier for donors by combining their standardized name with
+their zip code. This identifier was created to be able to link donors
+who contributed across multiple campaigns in multiple years without
+considering two different people, with the same name, from different
+locations to be the same person.
 
-Next, I derived the partisanship of each donor in each election cycle. I
-calculated each donor's partisanship by taking the percent of donations
-that each donor gave to Republicans divided by their donations to
-Republicans and Democrats. I took that ``percent donated to
-Republicans'' and rescaled it from -1 to 1, where -1 represents the most
-Democratic donors, and 1 the most Republican donors. I also calculated
-each individual's party bin: if more than 75\% of donations were to
-Democrats, they were labeled as a Democrat; if more than 75\% of
-donations were to Republicans, they were labeled as a Republican; if
-their donations were somewhere inbetween, they were labeled as being a
-bipartisan donor.
+Next, I estimated the partisanship of each donor in each election cycle
+by taking the percent of donations that each donor gave to Republicans
+divided by their donations to Republicans and Democrats. I took that
+``percent donated to Republicans'' and rescaled it from -1 to 1, where
+-1 represents the most Democratic donors, and 1 the most Republican
+donors. I also calculated each individual's party bin: if more than 75\%
+of donations were to Democrats, they were labeled as a Democrat; if more
+than 75\% of donations were to Republicans, they were labeled as a
+Republican; if their donations were somewhere inbetween, they were
+labeled as being a bipartisan donor.
 
 To quantify the levels of polarization in each election cycle, I
 calculated two statistics: network modularity and average absolute
@@ -398,12 +392,13 @@ and candidates are nodes and donations connecting donors and candidates
 are edges. This conceptualization of the political donor landscape as
 network allows us to examine the network structure and calculate network
 statistics on the graph of donors and candidates. One of the most useful
-network statistics for measuring polarization in a network's modularity.
+network statistics for measuring polarization in a network is modularity
+(Newman 2006).
 
-The modularity of a graph measures how good the division of groups (such
-as political parties) is by calculating ``the number of edges falling
-within groups minus the expected number in an equivalent network with
-edges placed at random'' (Newman 2006). The modularity of a network
+The modularity of a graph measures the strength of the division of
+groups (such as political parties) by calculating ``the number of edges
+falling within groups minus the expected number in an equivalent network
+with edges placed at random'' (Newman 2006). The modularity of a network
 falls in range {[}-1/2, 1{]}. If the modularity is positive, the number
 of edges that remain within each group is greater than the expected
 number to remain in-group based on chance. The higher the modularity,
@@ -439,9 +434,9 @@ their money that they contributed to a single party. To calculate the
 significance in the difference of the mean absolute partisanship, I use
 a bootstrap methodology with 1,000 replications using the \texttt{infer}
 R package (Bray et al. 2020). This paper uses a non-parametric
-permutation method because of the non-normal distribution of
-partisanship of the donors given that 98\% of donors across all election
-cycles only contribute to a single party.
+permutation method because of the non-Normal distribution of
+partisanship of the donors (98\% of donors across all election cycles
+only contribute to a single party).
 
 To conduct a hypothesis test with a permutation, you first compute the
 mean for each group of the measure that you're interested in--in this
@@ -452,8 +447,8 @@ randomly draw new groups of data of equal sizes of the original groups.
 You then calculate the difference in sample means from these random
 draws and compare them to your original sample mean (Wilcox 2003). This
 paper uses 1,000 replications, primarily to be able to calculate a
-p-value at the to thousandsths-level. A p-value for a permutation test
-is done by calculating the proportion of randomly drawn \(d's\) that are
+p-value to the thousandths place. A p-value for a permutation test is
+done by calculating the proportion of randomly drawn \(d's\) that are
 greater than the original \(d\) (Butar and Park 2008). In essence, you
 figure out what proportion of your randomized draws have a sample mean
 that is greater or less than your observed data--how many randomized
@@ -480,17 +475,17 @@ clusters of donors (Democrats and Republicans) that are reasonably close
 to one another in the 2010 election cycle and then polarize
 significantly in the 2012 election cycle and remain polarized in 2014.
 
-This graphical representation is an accurate depiction of statistical
-measures of polarization within the networks. Table 1 show the
-modularity of the networks in the 2010, 2012, and 2014 election cycles.
-In 2010, the modularity of the donor network is 0.4. The modularity for
-the 2012 cycle climbs to 0.49 and settles in during the 2014 cycle at
-0.48. The interpretation of modularity is the higher the number, the
-more observed polarization within the network. As such, the rise in
-modularity in the 2012 cycle depicts polarization within the donor
-network in 2012 compared to 2010. And then the steady modularity in the
-2014 cycle reveals a stabilization of the level of polarization observed
-in the 2012 election cycle.
+This graphical representation reflects statistical measures of
+polarization within the networks. Table 1 show the modularity of the
+networks in the 2010, 2012, and 2014 election cycles. In 2010, the
+modularity of the donor network is 0.4. The modularity for the 2012
+cycle climbs to 0.49 and settles in at 0.48 during the 2014 cycle. The
+interpretation of modularity is the higher the number, the more observed
+polarization within the network. As such, the rise in modularity in the
+2012 cycle depicts polarization within the donor network in 2012
+compared to 2010. And then the steady modularity in the 2014 cycle
+reveals a stabilization of the level of polarization observed in the
+2012 election cycle.
 
 One limitation of a modularity calculation is that it does not quantify
 uncertainty. To validate the results of the modularity calculation, I
@@ -498,17 +493,27 @@ conducted a hypothesis test. Table 2 compares the average absolute donor
 partisanship in 2012 compared to 2010 and 2014 compared to 2012. As the
 table shows, donors in the 2012 election cycle became much more partisan
 with an average change of absolute of partisanship of 0.04212 (CI =
-0.04012-0.04393, p-value = \textless.001). While there was not a
+0.04025-0.04405, p-value = \textless.001). However, there was not a
 statistically signiciant change in mean absolute partisanship in the
-2014 election cycle compared to the 2012 election cycle (0.04212, CI =
-0.04012-0.04393, p-value = \textless.001).
+2014 election cycle compared to the 2012 election cycle
+(\ensuremath{-2.8\times 10^{-4}}, CI = -0.00089-0.00036, p-value =
+0.376).
 
-With the results of the modularity calculations and the hypothesis
-tests, I reject the null of \(H_{1}\) and fail to reject the null of the
-alternative \(H_{2}\). In other words, political donors in Wisconsin had
-a statistically significant increase in polarization in the 2012
-election cycle--the same time as when other scholars and experts point
-towards the mass polarization of the state.
+Taken together, the results of the modularity calculations and the
+hypothesis tests support the rejection of the null of \(H_{1}\) and fail
+to reject the null of the alternative \(H_{2}\). In other words,
+political donors in Wisconsin had a statistically significant increase
+in polarization in the 2012 election cycle--the same time as when other
+scholars and experts point towards the mass polarization of the state.
+{[}Find mass polarization data, hopefully MU law poll{]}
+
+Additional data and graphs are provided to contextualize the
+polarization that is observed among political donors in Wisconsin.
+Figure 2 shows the partisan flow of political donors across the election
+cycles, including the massive influx of new donors in both the 2012 and
+2014 election cycles. Figure 3 shows the partisan shift of donors who
+contributed in both the 2010 and 2012 election cycles. Figure 4 shows
+the geographical shifts of donor partisanship.
 
 \hypertarget{discussion}{%
 \section{Discussion}\label{discussion}}
@@ -517,10 +522,9 @@ The failure to reject the null of \(H_{1}\) suggests that political
 donors were likely not the main contributors to the extreme levels of
 polarization first seen in the state in 2012. Other factors such as
 Governor Scott Walker's Act 10 and a more polarized primary electorate
-in the wake of the Tea Party in 2010, as studied by Jacobson (2012),
-electing Governor Walker in the first place, appear to be the
-contributors to mass polarization in addition to political donors, at
-least in Wisconsin.
+in the wake of the Tea Party in 2010 (Jacobson 2012), and electing
+election Governor Walker in the first place, appear to be the
+contributors to mass polarization and political donors in Wisconsin.
 
 These results also provide evidence for the `consumption' model of
 political donations. Ansolabehere, de Figueiredo and Syder's (2003)
@@ -531,22 +535,31 @@ polarization of the electorate. The conclusion that we can draw is that
 the polarization of these two groups of people were a behavioral,
 participatory response to a changing political environment. Both the
 electorate and donors have specific acts of political consumption
-(voting and donating, respectively) that both impacted in the same way
-at the same time.
+(voting and donating, respectively) that were both impacted in the same
+way at the same time.
 
 Further evidence for this consumption model is the idea that political
 donations are an extension of voting in the broader realm of political
-participation. Descriptively, we can observe that there was a mass
-influx of new political donors in 2012 and 2014 (see Figure 2). This
-inflow of donors suggests that the same mechanism that triggered mass
-polarization also spurred members of the mass electorate to go beyond
-voting and make a political contribution. Previous research by Oklobzija
-(2016) found a similar conclusion that ``politically polarizing events
-bear dividends for extremist lawmakers'' in California who raised more
-money as a result of polarizing political events. In short, it appears
-that political donations are an extension of voting, an outlet for
-political participation when individuals perceive the stakes of the
-election to be high, as concluded by Hill and Huber (2017). And so it
+participation. The inflow of new donors show in Figure 2 suggests that
+the same mechanism that triggered mass polarization also spurred members
+of the mass electorate to go beyond voting and make political
+contributions. Previous research by Oklobzija (2016) reached a similar
+conclusion that ``politically polarizing events bear dividends for
+extremist lawmakers'' in California who raised more money as a result of
+polarizing political events. Even though new donors are the likely
+explanation for most of the polarization observed in the networks,
+donors that contributed in both the 2010 and 2012 election cycles also
+showed significant movement. The shift among donors whose contributions
+are not purely partisan shift to be more Republican. Figure 3 shows how
+donors who were not pure partisan donors in 2010 much more often became
+purely Republican donors compared to Democartic donors. {[}Add
+split-ticket voting discussion{]}
+
+{[}Add paragraph on geographic sorting{]}
+
+In short, it appears that political donations are an extension of
+voting, an outlet for political participation when individuals perceive
+the stakes of the election to be high (Hill and Huber 2017). And so it
 would be reasonable to find that political donors are not the cause of
 political polarization. But in fact, more polarized donors are a
 reflection of polariztion seen elsewhere in American politics.
@@ -567,9 +580,9 @@ Election Cycle & Modularity\tabularnewline
 Election Cycle & Modularity\tabularnewline
 \midrule
 \endhead
-2010 & 0.3987248\tabularnewline
-2012 & 0.4912342\tabularnewline
-2014 & 0.4797860\tabularnewline
+2010 & 0.3987172\tabularnewline
+2012 & 0.4912366\tabularnewline
+2014 & 0.4797903\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -586,10 +599,10 @@ Election Cycle & T & CI & p\tabularnewline
 Election Cycle & T & CI & p\tabularnewline
 \midrule
 \endhead
-2012 compared to 2010 & 0.04212 & 0.04012-0.04393 &
+2012 compared to 2010 & 0.04212 & 0.04025-0.04405 &
 \textless.001\tabularnewline
-2014 compared to 2012 & -0.00029 & -0.00089-0.00029 &
-0.356\tabularnewline
+2014 compared to 2012 & -0.00028 & -0.00089-0.00036 &
+0.376\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -602,14 +615,12 @@ Election Cycle & T & CI & p\tabularnewline
 \subsubsection{Figure 1}\label{figure-1}}
 
 \begin{figure}
-\centering
-\includegraphics{../figures/fig1.png}
-\caption{Visual representation of Wisconsin donor networks in the 2010,
-2012 and 2014 election cycle using the Yifan Hu layout algorithm. Each
-dot/ node is a donor or campaign and lines/ edges connecting them are
-donations. Nodes sized by in-degree (incoming donations. Nodes and edges
-are colored by the partisanship of the donor. Percentages on the bars
-reprsent the percent of donors in each party bin.}
+
+{\centering \includegraphics[width=0.73\linewidth]{../figures/fig1} 
+
+}
+
+\caption{Visual representation of Wisconsin donor networks in the 2010, 2012 and 2014 election cycle using the Yifan Hu layout algorithm. Each dot/ node is a donor or campaign and lines/ edges connecting them are donations. Nodes sized by in-degree (incoming donations. Nodes and edges are colored by the partisanship of the donor. Percentages on the bars reprsent the percent of donors in each party bin.}\label{fig:unnamed-chunk-10}
 \end{figure}
 
 \newpage
@@ -618,12 +629,37 @@ reprsent the percent of donors in each party bin.}
 \subsubsection{Figure 2}\label{figure-2}}
 
 \begin{figure}
-\centering
-\includegraphics{../figures/fig2.png}
-\caption{Sankey diagram of the flow of political donors in 2010, 2012,
-and 2014 election cycles in Wisconsin. The vertical bars are
-proportional to the number of donors in each bin.}
+\includegraphics[width=1\linewidth]{../figures/fig2} \caption{Sankey diagram of the flow of political donors in 2010, 2012, and 2014 election cycles in Wisconsin. The vertical bars are proportional to the number of donors in each bin.}\label{fig:unnamed-chunk-11}
 \end{figure}
+
+\newpage
+
+\hypertarget{figure-3}{%
+\subsubsection{Figure 3}\label{figure-3}}
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{../figures/fig3} \caption{Every dot is a donor who contributed in 2010 and 2012. The bigger the dot, the more money they contribted. The x-axis is their partisanship in the 2010 election cycle and the y-axis is their partisanship in the 2012 election cycle. If the donor is to the right of the center diagonal line, they became more Republican. If they are to the left of the line, they became more Democratic.}\label{fig:unnamed-chunk-12}
+\end{figure}
+
+\newpage
+
+\hypertarget{figure-4}{%
+\subsubsection{Figure 4}\label{figure-4}}
+
+\begin{figure}
+\includegraphics[width=0.9\linewidth]{../figures/fig4} \caption{This box and whisker plot is grouped by the partisanship of the donors in the 2010 and 2012 election cycles. Note that the y-axis is shown on a log10 scale for clarity. The partisan distribution is shown along the bottom of the x-axis.}\label{fig:unnamed-chunk-13}
+\end{figure}
+
+\newpage
+
+\hypertarget{figure-5}{%
+\subsubsection{Figure 5}\label{figure-5}}
+
+\begin{figure}
+\includegraphics[width=0.9\linewidth]{../figures/fig5} \caption{This map shows the polarization of donor networks across Wisconsin's counties based on the net change of donors in each county per 10,000 residents. The red counties had a net increase in Republican donors, blue counties had a net increase for Democrats, and the purple counties had little or no change.}\label{fig:unnamed-chunk-14}
+\end{figure}
+
+\newpage
 
 \hypertarget{references}{%
 \section*{References}\label{references}}
@@ -889,10 +925,6 @@ of Ambient Intelligence and Humanized Computing}, January.
 Roscoe, Douglas D., and Shannon Jenkins. 2005. ``A Meta-Analysis of
 Campaign Contributions' Impact on Roll Call Voting.'' \emph{Social
 Science Quartlery} 86 (1): 52--68.
-
-\leavevmode\hypertarget{ref-rstudio}{}%
-RStudio Team. 2020. \emph{RStudio: Integrated Development Environment
-for R}. Boston, MA: RStudio, PBC. \url{http://www.rstudio.com/}.
 
 \leavevmode\hypertarget{ref-sewell2011}{}%
 Sewell, Abby. 2011. ``Protesters Out in Force Nationwide to Oppose

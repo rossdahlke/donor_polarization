@@ -1,11 +1,6 @@
 ---
 output:
-  pdf_document:
-    # citation_package: biblatex
-    keep_tex: true
-    fig_caption: true
-    latex_engine: pdflatex
-    template: ../svm-latex-ms.tex
+  word_document
 title: "Political Donor Polarization: Observing Consumptive Behavior using a Network Approach"
 thanks: "Code and data available at: github.com/rossdahlke"
 author:
@@ -33,7 +28,7 @@ Although the psychological process of making a political campaign contribution c
 
 This ideological extremity shown by political donors has led some scholars to suggest that political donors are contributors to the partisan polarization of the politics of the United States [@francia2005]. This idea is supported by the observation that both political polarization and campaign spending have risen in conjunction [@mccarty2006]. However, there little evidence for the causal relationship of donors causing political polarization. Many have found that political donations don't influence polarization [@harden2016; @laraja2011; @keena2019]. Furthermore, it is likely the case that the causal arrow flows the other direction, and it is a more polarized electorate and candidates that have led to more polarized donors [@harden2016; @laraja2011; @keena2019].
 
-[Add in section about consequences of polarized donors / why is it inmportant that we understand what is causing greater donor polarization]
+[Add in section about consequences of polarized donors / why is it important that we understand what is causing greater donor polarization]
 
 Studying polarization, particularly among political donors can be difficult because of the myriad of potential confounding factors that can contribute to polarization [@harden2016]. In addition, polarization is generally a phenomenon that gradually increases or decreases over time [@pew2017]. However, this paper leverages a singular event, former Wisconsin Governor Scott Walker's proposition and passage of Act 10, a "budget repair bill" that ended collective bargaining for teachers unions, to examine political donor polarization in the state of Wisconsin. Given the recent research which has pointed to the polarization of political donors as being _reactive_ instead of _causal_ to broader polarization, we could expect political donors to follow the trend of voters and polarize after introduction of Act 10 and subsequent events.
 
@@ -43,7 +38,7 @@ If this hypothesis is supported, these results would strengthen the evidence for
 
 Alternatively, if political donors are instead _contributors_ to mass and legislative polarization, as is suggested by some scholars, we would expect to see hypothesis 2. 
 
-**$H_{2}$: Polarization levels stay the same in 2011-2012 compared to 2009-2010.**
+**$H_{2}$: Polarization levels stays the same from 2009-2010 compared to 2011-2012.**
 
 If hypothesis two is supported, the result would suggest that political donors helped to create the polarized political environment that we see today.
 
@@ -53,7 +48,7 @@ In addition, this paper makes a methodological contribution to campaign finance 
 
 Both Wisconsin's legislators and mass public are among the most polarized in the nation [@cramer2016], and the state been used by academics to examine how political actions unfold in contentious and highly divisive environment [@bode2018]. Although many state legislatures are also experiencing polarization [@shor2015], Wisconsin is unique in that there is a single event that many point to in creating "the most politically divisive place in America" [@kaufman2012]. 
 
-In 2011, newly-elected Republican Governor Scott Walker introduced Act 10, a "budget reconciliation bill" that stripped public school teachers of collective bargaining via their union. Up to 100,000 people protested this "anti-union bill" at the State Capitol and even occupied the capitol building for a period of time [@sewell2011]. Democratic lawmakers fled to Illinois in an effort to delay or stop the bill from passing into law [@layton2011]. In 2012 there was an unsuccessful election to recall Governor Walker.
+In 2011, newly-elected Republican Governor Scott Walker introduced Act 10, a "budget reconciliation bill" that stripped public school teachers of collective bargaining via their union. Up to 100,000 protested this "anti-union bill" at the State Capitol and even occupied the capitol building for a period of time [@sewell2011]. Democratic lawmakers fled to Illinois in an effort to delay or stop the bill from passing into law [@layton2011]. In 2012 there was an unsuccessful election to recall Governor Walker.
 
 Wisconsin Governor Scott Walker's self-anointed "divide and conquer" politics [@blake2012] has left a political divide in Wisconsin that persists to today. The result is that "divisive politics ruled Wisconsin over the last decade" [@marley2019]. The Marquette Law School poll headed by Charles Franklin has called public opinion in Wisconsin a "lesson in the two worlds of Wisconsin" where "it seems often as if people have not only differing opinions but differing views of facts and realities" [@borsuk2017].
 
@@ -246,7 +241,7 @@ The results of this analysis show that political donors in Wisconsin polarized d
 
 This graphical representation reflects statistical measures of polarization within the networks. Table 1 show the modularity of the networks in the 2010, 2012, and 2014 election cycles. In 2010, the modularity of the donor network is `r table_1 %>% filter(election_years == 2010) %>% pull(modularity) %>% round(2)`. The modularity for the 2012 cycle climbs to `r table_1 %>% filter(election_years == 2012) %>% pull(modularity) %>% round(2)` and settles in at `r table_1 %>% filter(election_years == 2014) %>% pull(modularity) %>% round(2)` during the 2014 cycle. The interpretation of modularity is the higher the number, the more observed polarization within the network. As such, the rise in modularity in the 2012 cycle depicts polarization within the donor network in 2012 compared to 2010. And then the steady modularity in the 2014 cycle reveals a stabilization of the level of polarization observed in the 2012 election cycle. 
 
-One limitation of a modularity calculation is that it does not quantify uncertainty. To validate the results of the modularity calculation, I conducted a hypothesis test. Table 2 compares the average absolute donor partisanship in 2012 compared to 2010 and 2014 compared to 2012. As the table shows, donors in the 2012 election cycle became much more partisan with an average change of absolute of partisanship of `r table_2 %>% filter(cycle == "2012 compared to 2010") %>% pull(mean_diff)` (CI = `r table_2 %>% filter(cycle == "2012 compared to 2010") %>% pull(ci)`, p-value = `r table_2 %>% filter(cycle == "2012 compared to 2010") %>% pull(p_value)`). However, there was not a statistically signiciant change in mean absolute partisanship in the 2014 election cycle compared to the 2012 election cycle (`r table_2 %>% filter(cycle == "2014 compared to 2012") %>% pull(mean_diff)`, CI = `r table_2 %>% filter(cycle == "2014 compared to 2012") %>% pull(ci)`, p-value = `r table_2 %>% filter(cycle == "2014 compared to 2012") %>% pull(p_value)`). 
+One limitation of a modularity calculation is that it does not quantify uncertainty. To validate the results of the modularity calculation, I conducted a hypothesis test. Table 2 compares the average absolute donor partisanship in 2012 compared to 2010 and 2014 compared to 2012. As the table shows, donors in the 2012 election cycle became much more partisan with an average change of absolute of partisanship of `r table_2 %>% filter(cycle == "2012 compared to 2010") %>% pull(mean_diff)` (CI = `r table_2 %>% filter(cycle == "2012 compared to 2010") %>% pull(ci)`, p-value = `r table_2 %>% filter(cycle == "2012 compared to 2010") %>% pull(p_value)`). However, there was not a statistically signiciant change in mean absolute partisanship in the 2014 election cycle compared to the 2012 election cycle (`r table_2 %>% filter(cycle == "2012 compared to 2010") %>% pull(mean_diff)`, CI = `r table_2 %>% filter(cycle == "2012 compared to 2010") %>% pull(ci)`, p-value = `r table_2 %>% filter(cycle == "2012 compared to 2010") %>% pull(p_value)`). 
 
 Taken together, the results of the modularity calculations and the hypothesis tests support the rejection of the null of $H_{1}$ and fail to reject the null of the alternative $H_{2}$. In other words, political donors in Wisconsin had a statistically significant increase in polarization in the 2012 election cycle--the same time as when other scholars and experts point towards the mass polarization of the state. [Find mass polarization data, hopefully MU law poll]
 
@@ -289,7 +284,7 @@ table_2 %>%
 
 ### Figure 1
 
-```{r include = T, echo = F, out.width = "73%", fig.align = "center", fig.cap = "Visual representation of Wisconsin donor networks in the 2010, 2012 and 2014 election cycle using the Yifan Hu layout algorithm. Each dot/ node is a donor or campaign and lines/ edges connecting them are donations. Nodes sized by in-degree (incoming donations. Nodes and edges are colored by the partisanship of the donor. Percentages on the bars reprsent the percent of donors in each party bin."}
+```{r include = T, echo = F, out.width = "100%", fig.cap = "Visual representation of Wisconsin donor networks in the 2010, 2012 and 2014 election cycle using the Yifan Hu layout algorithm. Each dot/ node is a donor or campaign and lines/ edges connecting them are donations. Nodes sized by in-degree (incoming donations. Nodes and edges are colored by the partisanship of the donor. Percentages on the bars reprsent the percent of donors in each party bin."}
 knitr::include_graphics("../figures/fig1.png")
 ```
 
@@ -297,32 +292,8 @@ knitr::include_graphics("../figures/fig1.png")
 
 ### Figure 2
 
-```{r include = T, echo = F, out.width = "100%", fig.cap = "Sankey diagram of the flow of political donors in 2010, 2012, and 2014 election cycles in Wisconsin. The vertical bars are proportional to the number of donors in each bin."}
+```{r include = T, echo = F, fig.cap = "Sankey diagram of the flow of political donors in 2010, 2012, and 2014 election cycles in Wisconsin. The vertical bars are proportional to the number of donors in each bin."}
 knitr::include_graphics("../figures/fig2.png")
-```
-
-\newpage
-
-### Figure 3
-
-```{r include = T, echo = F, out.width = "100%", fig.cap = "Every dot is a donor who contributed in 2010 and 2012. The bigger the dot, the more money they contribted. The x-axis is their partisanship in the 2010 election cycle and the y-axis is their partisanship in the 2012 election cycle. If the donor is to the right of the center diagonal line, they became more Republican. If they are to the left of the line, they became more Democratic."}
-knitr::include_graphics("../figures/fig3.png")
-```
-
-\newpage
-
-### Figure 4
-
-```{r include = T, echo = F, out.width = "90%", fig.cap = "This box and whisker plot is grouped by the partisanship of the donors in the 2010 and 2012 election cycles. Note that the y-axis is shown on a log10 scale for clarity. The partisan distribution is shown along the bottom of the x-axis."}
-knitr::include_graphics("../figures/fig4.png")
-```
-
-\newpage
-
-### Figure 5
-
-```{r include = T, echo = F, out.width = "90%", fig.cap = "This map shows the polarization of donor networks across Wisconsin's counties based on the net change of donors in each county per 10,000 residents. The red counties had a net increase in Republican donors, blue counties had a net increase for Democrats, and the purple counties had little or no change."}
-knitr::include_graphics("../figures/fig5.png")
 ```
 
 \newpage
