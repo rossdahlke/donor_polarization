@@ -57,9 +57,7 @@ Both Wisconsin's legislators and mass public are among the most polarized in the
 
 In 2011, newly-elected Republican Governor Scott Walker introduced Act 10, a "budget reconciliation bill" that stripped public school teachers of collective bargaining via their union. Up to 100,000 people protested this "anti-union bill" at the State Capitol and even occupied the capitol building for a period of time [@sewell2011]. Democratic lawmakers fled to Illinois in an effort to delay or stop the bill from passing into law [@layton2011]. In 2012 there was an unsuccessful election to recall Governor Walker.
 
-Wisconsin Governor Scott Walker's self-anointed "divide and conquer" politics [@blake2012] has left a political divide in Wisconsin that persists to today. The result is that "divisive politics ruled Wisconsin over the last decade" [@marley2019]. The Marquette Law School poll headed by Charles Franklin has called public opinion in Wisconsin a "lesson in the two worlds of Wisconsin" where "it seems often as if people have not only differing opinions but differing views of facts and realities" [@borsuk2017].
-
-[Why Wisconsin is especially good for studying your question]
+Wisconsin Governor Scott Walker's self-anointed "divide and conquer" politics [@blake2012] has left a political divide in Wisconsin that persists to today. The result is that "divisive politics ruled Wisconsin over the last decade" [@marley2019]. The Marquette Law School poll headed by Charles Franklin has called public opinion in Wisconsin a "lesson in the two worlds of Wisconsin" where "it seems often as if people have not only differing opinions but differing views of facts and realities" [@borsuk2017]. This discrete event and its long-lasting consequences provides a unique opportunity to study massively polarized politics that can be attributed back to a single event. In addition, Wisconsin is a competitive swing state that reflects a roughly 50-50 split similar to the country as a whole.  
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(include = FALSE)
