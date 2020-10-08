@@ -302,8 +302,8 @@ table_2 %>%
 
 \newpage
 
-```{r}
-tibble(party = c("Democrat", "Republican", "Independent/ Neither"),
+```{r include = T, echo = F}
+tibble(Party = c("Democrat", "Republican", "Independent/ Neither"),
        "7/15/2010 poll" = c(.24, .26, .4),
        "10/28/2012 poll" = c(.42, .42, .12),
        "10/26/2014 poll" = c(.33, .45, .17)) %>% 
