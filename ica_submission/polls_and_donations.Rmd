@@ -1,0 +1,119 @@
+---
+output:
+  pdf_document:
+    # citation_package: biblatex
+    keep_tex: true
+    fig_caption: true
+    latex_engine: pdflatex
+    template: ../svm-latex-ms.tex
+title: "(Work in Progress) Political Donor Polarization: Observing Consumptive Behavior using a Network Approach"
+thanks: 
+author:
+- name: 
+affiliation: 
+abstract: ""
+keywords: "polarization, political donations, network analysis, state politics"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+geometry: margin=1in
+fontfamily: mathpazo
+fontsize: 12pt
+spacing: double
+bibliography: ../bibliography.bib
+biblio-style: apsr
+header-includes: \usepackage{graphicx}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(include = FALSE)
+library(tidyverse)
+library(infer)
+library(igraph)
+```
+
+```{r}
+donations <- readRDS("../data/wi_donations.RDA") %>% 
+  mutate(source = str_to_lower(str_replace(source, "[[:punct:]]", " ")),
+         election_year =  as.character(election_year)) 
+
+donations_n <- donations %>% 
+  count() %>% 
+  pull()
+
+anon_donations_n <- donations %>% 
+  filter(str_detect(source, c("unitemized|anonymous")) == T) %>% 
+  count() %>% 
+  pull()
+
+donations_2 <- donations %>% 
+  filter(str_detect(source, c("unitemized|anonymous")) == F) %>% 
+  mutate(zip_5 = str_sub(zip, 1, 5),
+         refined_source = refinr::n_gram_merge(refinr::key_collision_merge(source)),
+         refined_source_zip = paste0(refined_source," : ",zip_5)) 
+
+filtered_donations <- donations_2 %>% 
+  group_by(election_year, refined_source_zip) %>% 
+  mutate(source_count = n()) %>% 
+  filter(source_count > 1) %>% 
+  group_by(election_year, target) %>% 
+  mutate(target_count = n()) %>% 
+  filter(target_count > 20) %>% 
+  ungroup()
+
+polls <- tibble(date = seq.Date(as.Date("2009-01-01"), as.Date("2020-12-31"), 1)) %>% 
+  left_join(read_csv("../data/polling_data.csv") %>% 
+  mutate(date = lubridate::mdy(date))) 
+
+polls_interpolated <- tibble(date = polls$date,
+       neither = polls$neither,
+       imputed_neither = imputeTS::na_interpolation(ts(polls$neither), option = "linear"),
+       democrat = polls$democrat,
+       imputed_democrat = imputeTS::na_interpolation(ts(polls$democrat), option = "linear"),
+       republican = polls$republican,
+       imputed_republican = imputeTS::na_interpolation(ts(polls$republican), option = "linear")) 
+```
+
+```{r}
+polls_interpolated %>% 
+  filter(date <= "2014-12-12") %>% 
+  mutate(neither = neither / 100,
+         imputed_neither = imputed_neither / 100) %>% 
+  ggplot(aes(x = date)) +
+  geom_line(aes(y = imputed_neither), color = "darkgrey")  +
+  geom_point(aes(y = neither), color = "black") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 5L), breaks = seq(0, 1, .1)) +
+  scale_x_date(breaks = "1 year", date_labels = "%Y") +
+  labs(title = "Wisconsin Party Independent/ Neither Party Identification",
+       subtitle = "Imputed values",
+       caption = "Data: MU Law School Poll & UW-Madison Badger Poll",
+       x = "",
+       y = "") +
+  theme_bw() 
+```
+
+```{r}
+polls_interpolated %>% 
+  filter(date <= "2014-12-12") %>% 
+  select(date, contains("imputed")) %>% 
+  pivot_longer(cols = c("imputed_neither", "imputed_democrat", "imputed_republican")) %>% 
+  group_by(date) %>% 
+  mutate(value_fill = value / sum(value)) %>% 
+  ggplot(aes(date, value_fill, fill = name)) +
+  geom_area() +
+  scale_fill_manual(values = c("darkblue", "grey", "darkred"), labels = c("Imputed Democrats", "Imputed Neither/ Independent", "Imputed Republicans")) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 5L), breaks = seq(0, 1, .1)) +
+  scale_x_date(breaks = "1 year", date_labels = "%Y") +
+  labs(title = "Wisconsin Party Identification 2010-2020",
+       subtitle = "Imputed values",
+       caption = "Data: MU Law School Poll & UW-Madison Badger Poll",
+       x = "",
+       y = "") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+start_date <- "2011-01-01"
+
+filtered_donations
+```
+
