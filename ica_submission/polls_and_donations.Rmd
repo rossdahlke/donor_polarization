@@ -112,8 +112,63 @@ polls_interpolated %>%
 ```
 
 ```{r}
-start_date <- "2011-01-01"
+modularity_window <- function(start_date,
+                              end_date){
 
-filtered_donations
+filtered_donations_2 <- filtered_donations %>% 
+  filter(date >= start_date & date <= end_date) %>% 
+  filter(party != "other") 
+  
+by_donor <- filtered_donations_2 %>% 
+  group_by(refined_source_zip, party) %>% 
+  summarize(contribution = sum(contribution)) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = party, 
+              values_from = contribution) %>% 
+  mutate(rep = replace_na(rep, 0),
+         dem = replace_na(dem, 0),
+         total_contributions = rep + dem,
+         per_rep = rep / total_contributions,
+         partisanship = scales::rescale(per_rep, to = c(-1, 1)),
+         abs_partisanship = abs(partisanship),
+         party_bin = case_when(
+           per_rep < .25 ~ "democrat",
+           per_rep >= .25 & per_rep <= .75 ~ "bipartisan",
+           per_rep > .75 ~ "republican"
+         ))
+
+nodes_w_party <- by_donor %>% 
+  select(refined_source_zip, party_bin) %>% 
+  rename(node = refined_source_zip,
+         party = party_bin) %>% 
+  rbind(donations_2 %>% 
+  distinct(target, party) %>% 
+    rename(node = target) %>% 
+    mutate(party  = case_when(
+      party == "rep" ~ "republican",
+      party == "dem" ~ "democrat"
+    ))) %>% 
+  distinct(node, party) %>% 
+  mutate(party_num = case_when(
+    party == "democrat" ~ 1,
+    party == "bipartisan" ~ 2,
+    party == "republican" ~ 3
+  ))
+  
+filtered_donations_2 %>%
+  select(refined_source_zip, target, contribution) %>% 
+  graph_from_data_frame(vertices = nodes_w_party) %>% 
+  modularity(nodes_w_party$party_num)
+}
+```
+
+```{r}
+modularity_window(start_date = "2012-01-01",
+                  end_date = "2014-12-31")
+```
+
+```{r}
+tibble(end_date = seq.Date(as.Date("2009-03-01"), as.Date("2014-12-31"), 1)) %>% 
+  mutate(start_date )
 ```
 
