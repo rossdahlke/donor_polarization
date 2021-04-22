@@ -61,12 +61,11 @@ filtered_donations <- donations_2 %>%
   filter(target_count > 20) %>% 
   ungroup()
 
-polls <- tibble(date = seq.Date(as.Date("2002-01-01"), as.Date("2020-12-31"), 1)) %>% 
+polls <- tibble(date = seq.Date(as.Date("2009-01-01"), as.Date("2020-12-31"), 1)) %>% 
   left_join(read_csv("../data/polling_data.csv") %>% 
   mutate(date = lubridate::mdy(date))) 
 
-polls_interpolated <- tibble(pollster = polls$pollster,
-       date = polls$date,
+polls_interpolated <- tibble(date = polls$date,
        neither = polls$neither,
        imputed_neither = imputeTS::na_interpolation(ts(polls$neither), option = "linear"),
        democrat = polls$democrat,
@@ -77,12 +76,13 @@ polls_interpolated <- tibble(pollster = polls$pollster,
 
 ```{r}
 polls_interpolated %>% 
+  filter(date <= "2014-12-12") %>% 
   mutate(neither = neither / 100,
          imputed_neither = imputed_neither / 100) %>% 
   ggplot(aes(x = date)) +
   geom_line(aes(y = imputed_neither), color = "darkgrey")  +
   geom_point(aes(y = neither), color = "black") +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 5L), breaks = seq(0, 1, .05)) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 5L), breaks = seq(0, 1, .1)) +
   scale_x_date(breaks = "1 year", date_labels = "%Y") +
   labs(title = "Wisconsin Party Independent/ Neither Party Identification",
        subtitle = "Imputed values",
@@ -94,45 +94,7 @@ polls_interpolated %>%
 
 ```{r}
 polls_interpolated %>% 
-  filter(!is.na(pollster)) %>% 
-  filter(pollster != "wis_survey") %>% 
-  mutate(neither = neither / 100,
-         imputed_neither = imputed_neither / 100) %>% 
-  ggplot(aes(x = date, color = pollster)) +
-  geom_smooth(aes(y = imputed_neither), color = "darkgrey", span = .2, method = "lm")  +
-  geom_point(aes(y = neither), color = "black") +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 5L), breaks = seq(0, 1, .05)) +
-  scale_x_date(breaks = "1 year", date_labels = "%Y") +
-  labs(title = "Wisconsin Party Independent/ Neither Party Identification",
-       subtitle = "Imputed values",
-       caption = "Data: MU Law School Poll & UW-Madison Badger Poll",
-       x = "",
-       y = "") +
-  theme_bw() 
-```
-
-```{r}
-polls_interpolated %>% 
-  filter(!is.na(pollster)) %>% 
-  mutate(neither = neither / 100,
-         imputed_neither = imputed_neither / 100) %>% 
-  ggplot(aes(x = date, color = pollster, group = pollster)) +
-  geom_smooth(aes(y = imputed_neither, color = pollster), span = .5)  +
-  geom_point(aes(y = neither)) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 5L), breaks = seq(0, 1, .05)) +
-  scale_x_date(breaks = "1 year", date_labels = "%Y") +
-  labs(title = "Wisconsin Party Independent/ Neither Party Identification",
-       subtitle = "Imputed values",
-       caption = "Data: MU Law School Poll & UW-Madison Badger Poll",
-       x = "",
-       y = "") +
-  theme_bw() +
-  theme(legend.position = "bottom")
-```
-
-
-```{r}
-polls_interpolated %>% 
+  filter(date <= "2014-12-12") %>% 
   select(date, contains("imputed")) %>% 
   pivot_longer(cols = c("imputed_neither", "imputed_democrat", "imputed_republican")) %>% 
   group_by(date) %>% 
@@ -153,72 +115,66 @@ polls_interpolated %>%
 
 ```{r}
 modularity_window <- function(end_date,
-                              days_window = 365,
+                              days_window = 60,
                               gubernatorial_donations = T){
-
-  start_date <- end_date - days_window
-
-  filtered_donations_2 <- filtered_donations %>% 
-    filter(date >= start_date & date <= end_date) %>% 
-    filter(party != "other") 
   
-  if(gubernatorial_donations == F){
-    filtered_donations_2 <- filtered_donations_2 %>% 
-      filter(office != "Governor")
-  }
-    
-  by_donor <- filtered_donations_2 %>% 
-    group_by(refined_source_zip, party) %>% 
-    summarize(contribution = sum(contribution)) %>% 
-    ungroup() %>% 
-    pivot_wider(names_from = party, 
-                values_from = contribution) %>% 
-    mutate(rep = replace_na(rep, 0),
-           dem = replace_na(dem, 0),
-           total_contributions = rep + dem,
-           per_rep = rep / total_contributions,
-           partisanship = scales::rescale(per_rep, to = c(-1, 1)),
-           abs_partisanship = abs(partisanship),
-           party_bin = case_when(
-             per_rep < .5 ~ "democrat",
-             # per_rep >= .25 & per_rep <= .75 ~ "bipartisan",
-             per_rep > .5 ~ "republican"
-           ))
-  
-  nodes_w_party <- by_donor %>% 
-    select(refined_source_zip, party_bin) %>% 
-    rename(node = refined_source_zip,
-           party = party_bin) %>% 
-    rbind(donations_2 %>% 
-    distinct(target, party) %>% 
-      rename(node = target) %>% 
-      mutate(party  = case_when(
-        party == "rep" ~ "republican",
-        party == "dem" ~ "democrat"
-      ))) %>% 
-    distinct(node, party) %>% 
-    mutate(party_num = case_when(
-      party == "democrat" ~ 1,
-      party == "bipartisan" ~ 2,
-      party == "republican" ~ 3
-    )) %>% 
-    mutate(party_num = if_else(is.na(party_num), 4, party_num))
-    
-  modularity <- filtered_donations_2 %>%
-    select(refined_source_zip, target, contribution) %>% 
-    graph_from_data_frame(vertices = nodes_w_party) %>% 
-    modularity(nodes_w_party$party_num)
-  
-  print("")
-  print(start_date)
   print(end_date)
-  print(gubernatorial_donations)
-  print(modularity)
+  start_date = end_date - days_window
+
+filtered_donations_2 <- filtered_donations %>% 
+  filter(date >= start_date & date <= end_date) %>% 
+  filter(party != "other") 
+
+if(gubernatorial_donations == F){
+  filtered_donations_2 <- filtered_donations_2 %>% 
+    filter(office != "Governor")
+}
   
-  return(tibble(start_date = start_date,
-                end_date = end_date,
-                includes_gubernatorial = gubernatorial_donations,
-                modularity = modularity))
+by_donor <- filtered_donations_2 %>% 
+  group_by(refined_source_zip, party) %>% 
+  summarize(contribution = sum(contribution)) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = party, 
+              values_from = contribution) %>% 
+  mutate(rep = replace_na(rep, 0),
+         dem = replace_na(dem, 0),
+         total_contributions = rep + dem,
+         per_rep = rep / total_contributions,
+         partisanship = scales::rescale(per_rep, to = c(-1, 1)),
+         abs_partisanship = abs(partisanship),
+         party_bin = case_when(
+           per_rep < .5 ~ "democrat",
+           # per_rep >= .25 & per_rep <= .75 ~ "bipartisan",
+           per_rep > .5 ~ "republican"
+         ))
+
+nodes_w_party <- by_donor %>% 
+  select(refined_source_zip, party_bin) %>% 
+  rename(node = refined_source_zip,
+         party = party_bin) %>% 
+  rbind(donations_2 %>% 
+  distinct(target, party) %>% 
+    rename(node = target) %>% 
+    mutate(party  = case_when(
+      party == "rep" ~ "republican",
+      party == "dem" ~ "democrat"
+    ))) %>% 
+  distinct(node, party) %>% 
+  mutate(party_num = case_when(
+    party == "democrat" ~ 1,
+    party == "bipartisan" ~ 2,
+    party == "republican" ~ 3
+  ))
+  
+modularity <- filtered_donations_2 %>%
+  select(refined_source_zip, target, contribution) %>% 
+  graph_from_data_frame(vertices = nodes_w_party) %>% 
+  modularity(nodes_w_party$party_num) 
+
+  return(tibble(end_date = end_date,
+                start_date = start_date,
+                gubernatorial_donations = gubernatorial_donations,
+                modularity = c(modularity)))
 }
 ```
 
@@ -229,11 +185,11 @@ registerDoParallel(makeCluster(n_cores - 1))
 ```
 
 ```{r}
-modularity_calcs <- foreach(end_date = seq.Date(as.Date("2009-12-31"), as.Date("2014-12-31"), 365),
+modularity_calcs <- foreach(end_date = seq.Date(as.Date("2009-03-01"), as.Date("2014-12-31"), 1),
                            .packages = c("dplyr", "tidyr", "igraph"),
                            .errorhandling = c("pass"),
                            .combine = "rbind") %:%
-  foreach(gubernatorial_donations = c(F),
+  foreach(gubernatorial_donations = c(F, T),
           .packages = c("dplyr", "tidyr", "igraph"),
           .errorhandling = c("pass"),
           .combine = "rbind") %dopar%
@@ -243,51 +199,9 @@ modularity_calcs <- foreach(end_date = seq.Date(as.Date("2009-12-31"), as.Date("
 
 ```{r}
 modularity_calcs %>% 
-  ggplot(aes(end_date, modularity, group = includes_gubernatorial, color = includes_gubernatorial)) +
-  geom_line() +
-  facet_wrap(.~includes_gubernatorial)
-```
-
-```{r}
-by_year <- modularity_calcs %>% 
-  mutate(year = lubridate::year(end_date)) %>% 
-  left_join(polls %>% 
-  filter(!is.na(pollster)) %>% 
-  mutate(year = lubridate::year(date)) %>% 
-  group_by(year) %>% 
-  summarize(neither_avg = mean(neither))) %>% 
-  ungroup() %>% 
-  mutate(lead_modularity = lead(modularity))
-
-cor.test(by_year$modularity, by_year$neither_avg)
-```
-```{r}
-cor.test(by_year$lead_modularity, by_year$neither_avg)
-```
-
-
-```{r}
-by_year %>% 
-  ggplot(aes(modularity, neither_avg)) +
+  ggplot(aes(end_date, modularity, group = gubernatorial_donations, color = gubernatorial_donations)) +
   geom_point() +
-  geom_smooth(method = "lm")
+  geom_smooth()
 ```
-
-# Trying something new
-
-```{r}
-sen_files <- dir("../data/state_senate_donations/", pattern = "*.csv") %>% 
-  map(~ read_csv(file.path("../data/state_senate_donations/", .))) %>% 
-  reduce(rbind)
-
-ass_files <- dir("../data/state_assembly_donations/", pattern = "*.csv") %>% 
-  map(~ read_csv(file.path("../data/state_assembly_donations/", .))) %>% 
-  reduce(rbind)
-
-all_donations <- sen_files %>% 
-  rbind(ass_files) %>% 
-  janitor::clean_names()
-```
-
 
 
