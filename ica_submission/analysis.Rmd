@@ -11,7 +11,7 @@ thanks:
 author:
 - name: "Ross Dahlke"
 affiliation: 
-abstract: "American politics has recently been defined by unprecedented levels of partisan polarization. Given the concurrent rise of the amount of money in politics, many have suggested a connection between money in politics and polarization. However, it remains unclear if donors have become more polarized. Using political donation data from the Wisconsin Campaign Finance Information System (CFIS) and using the network science measure of modularity, this paper shows that political donor networks have polarized. This polarization is connected to new donors, large donors, and donors from geographic areas that are strong electorally for either party."
+abstract: "American politics has recently been defined by unprecedented levels of partisan polarization. Given the concurrent rise of the amount of money in politics, many have suggested a connection between money in politics and polarization. However, it remains unclear if donors have become more polarized. Using political donation data from the Wisconsin Campaign Finance Information System (CFIS) and the network science measure of modularity, this paper shows that political donor networks have polarized in the case study of Wisconsin. This polarization appears to be connected to new donors, large donors, and donors from geographic areas that are strong electorally for either party."
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 geometry: margin=1in
 fontfamily: mathpazo
@@ -24,11 +24,11 @@ header-includes: \usepackage{graphicx}
 
 \newpage
 
-American politics is increasingly defined by polarization [@layman2006]. Political polarization in American has recently increased more than other countries around the world [@boxell2020]. In addition, this polarization is found at both at the elite and mass levels [@hare2014]. Researchers have suggested a variety of potential causes of polarization in the United States, including changing party composition, growing racial divisions, the emergence of partisan cable news [@boxell2020], social media [@allcott2020; @tucker2018], the form of American government [@pierson2020], and economics factors [@autor2020]. 
+American politics is increasingly defined by polarization [@layman2006]. Political polarization in America has increased more than other countries around the world in the last four decades [@boxell2020]. In addition, this polarization is found at both at the elite and mass levels [@hare2014]. Researchers have suggested a variety of potential causes of polarization in the United States, including changing party composition, growing racial divisions, the emergence of partisan cable news [@boxell2020], social media [@allcott2020; @tucker2018], the form of American government [@pierson2020], and economic factors [@autor2020]. 
 
-One other potential cause of polarization is political donors [@francia2005]. Political donors play an outsized role in American politics. The amount of money spent and raised by political campaigns continues to grow with every election cycle [@goldmacher2020]. The rise in the amount of money in politics, along with a concurrent rise in polarization, have led to the idea that political donors are contributors to polarization in politics [@mccarty2006]. Political donors do hold more extreme policy positions than the public and partisan citizens [broockman2020; @francia2005]. Barber [-@barber2016a] concluded that "the connection between donors and candidates is an important part of the story of the polarization of American politics. "However, it is unclear if political donors themselves are becoming more polarized. 
+One other potential cause of polarization is political donors [@francia2005]. Political donors play an outsized role in American politics. The amount of money spent and raised by political campaigns continues to grow with every election cycle [@goldmacher2020]. The rise in the amount of money in politics, along with a concurrent rise in polarization, has led to the speculation that political donors are contributors to polarization in politics [@mccarty2006]. Barber [-@barber2016a] concluded that "the connection between donors and candidates is an important part of the story of the polarization of American politics." And while political donors do hold more extreme policy positions than the public and partisan citizens [broockman2020; @francia2005], it remains unanswered if political donors themselves are polarizing. 
 
-I ask the question: _Are political donors polarizing?_. To answer this question, I build networks of political donors, where candidates and donors are nodes and the donations connecting them are the edges, in the 2010, 2012, and 2014 election cycles in Wisconsin state government elections. Due to the attempted recall of the governor and members of the state legislature, the state experienced three concurrent election cycles with almost all of the same offices up for the election--a rarity in American politics. In addition, many scholars and commentators point to the attempted recall of then Governor Scott Walker as a critical point in turning Wisconsin into one of the most polarized states in the country. 
+I ask the question: _Are political donors polarizing?_. To answer this question, I build networks of political donors, where candidates and donors are nodes and the donations connecting them are the edges, in the 2010, 2012, and 2014 election cycles in Wisconsin state government elections. Due to the attempted recall of the governor and members of the state legislature, the state experienced three concurrent election cycles with almost all of the same offices up for the election---a rarity in American politics. In addition, many scholars and commentators point to the attempted recall of then Governor Scott Walker as a critical point in turning Wisconsin into one of the most polarized states in the country. 
 
 This paper finds that political donors networks, compared to the 2010 election cycle, polarized during the 2012 election cycle and remained polarized in the 2014 cycle. While this research does not attempt to find any causal link between political donors and mass polarization, it does suggest that political donors themselves have become more polarized in time. In addition, the underlying data show potential connections between donor polarization and new donors, large donors, and geographic polarization in-line with electoral support.
 
@@ -36,9 +36,11 @@ This paper finds that political donors networks, compared to the 2010 election c
 
 Both Wisconsin's legislators and mass public are among the most polarized in the nation [@cramer2016], and the state has been used by academics to examine how political actions unfold in contentious and highly divisive environment [@bode2018]. Although many state legislatures are also experiencing polarization [@shor2015], Wisconsin is unique in that there is a single event that many point to in creating "the most politically divisive place in America" [@kaufman2012]. 
 
-In 2011, newly-elected Republican Governor Scott Walker introduced Act 10, a "budget reconciliation bill" that stripped public school teachers of collective bargaining via their union. Up to 100,000 people protested this "anti-union bill" at the State Capitol and even occupied the capitol building for a period of time [@sewell2011]. Democratic lawmakers fled to Illinois in an effort to delay or stop the bill from passing into law [@layton2011]. In 2012 there was an unsuccessful election to recall Governor Walker.
+In 2011, newly-elected Republican Governor Scott Walker introduced Act 10,a highly inflamitory measure which scholars credit for inciting mass polarization in the state. Act 10 was a "budget reconciliation bill" that stripped public school teachers of collective bargaining via their union. Up to 100,000 people protested this "anti-union bill" at the State Capitol and even occupied the capitol building for a period of time [@sewell2011]. Democratic lawmakers fled to Illinois in an effort to delay or stop the bill from passing into law [@layton2011]. In 2012 there was an unsuccessful election to recall Governor Walker.
 
-Wisconsin Governor Scott Walker's self-anointed "divide and conquer" politics [@blake2012] has left a political divide in Wisconsin that persists to today. The result is that "divisive politics ruled Wisconsin over the last decade" [@marley2019]. The Marquette Law School poll headed by Charles Franklin has called public opinion in Wisconsin a "lesson in the two worlds of Wisconsin" where "it seems often as if people have not only differing opinions but differing views of facts and realities" [@borsuk2017]. This discrete event and its long-lasting consequences provides a unique opportunity to study massively polarized politics that can be attributed back to a single event. In addition, Wisconsin is a competitive swing state that reflects a roughly 50-50 split similar to the country as a whole.  
+Wisconsin Governor Scott Walker's self-anointed "divide and conquer" politics [@blake2012] has left a political divide in Wisconsin that persists to today. The result is that "divisive politics ruled Wisconsin over the last decade" [@marley2019]. The Marquette Law School poll headed by Charles Franklin has called public opinion in Wisconsin a "lesson in the two worlds of Wisconsin" where "it seems often as if people have not only differing opinions but differing views of facts and realities" [@borsuk2017]. 
+
+This discrete event and its long-lasting consequences provides a unique opportunity to study massively polarized politics that can be attributed back to a single event. In addition, Wisconsin is a competitive swing state that reflects a roughly 50-50 split similar to the country as a whole.  
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(include = FALSE)
@@ -164,6 +166,7 @@ table_1 <- tibble(election_years) %>%
 
 ```{r include = T, echo = F}
 table_1 %>% 
+  mutate(modularity = round(modularity, 2)) %>% 
   knitr::kable(col.names = c("Election Cycle", "Modularity"),
                caption = "Modularity calculation for the donor networks in each election cycle. Higher modularity means more polarization.")
 ```
@@ -360,16 +363,26 @@ geo_calcs <- donor_geography %>%
             high_per_rep = Rmisc::CI(per_rep)[1])
 ```
 
-Figure 6 shows the partisanship of donors in different geographic categories. Table 3 is a table of the average partisanship of those different geographic categories. Figure 7 is a graph of each county in Wisconsin and the percentage of their vote for the Republican Scott Walker for Governor in 2012 and the average percentage contributed to Republicans in the 2012 cycle.
+```{r}
+by_county <- donor_geography %>% 
+  group_by(county, walker_per, geo_category) %>% 
+  summarize(per_rep = mean(per_rep))
 
-```{r include = T, echo = F, out.width = "100%", fig.cap = ""}
+cor_output <- cor.test(by_county$walker_per, by_county$per_rep)
+```
+
+
+Figure 6 shows the partisanship of donors in different geographic categories. Table 3 is a table of the average partisanship of those different geographic categories. Figure 7 is a graph of each county in Wisconsin and the percentage of their vote for the Republican Scott Walker for Governor in 2012 and the average percentage contributed to Republicans in the 2012 cycle. These two measures, electoral and donor partisanship in counties are significantly correlated (_r_ = `r signif(cor_output$estimate, 2)`, _p_ = <.001).
+
+```{r include = T, echo = F, warning = F, message = F, out.width = "100%", fig.cap = "Average Percentage Contributed to Republican Candidates in Wisconsin in 2012 by Geography."}
 geo_calcs %>% 
   mutate(geo_category = fct_rev(geo_category)) %>% 
   ggplot(aes(geo_category, y = mean_per_rep, ymin = low_per_rep, ymax = high_per_rep, color = geo_category)) +
-  geom_pointrange() +
+  geom_pointrange(size = 1.05) +
   scale_color_grey() +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(title = "Average Percentage Contributed to Republicans by Geographic Category",
+  scale_y_continuous(labels = scales::percent_format(), breaks = seq(0, 1, .05)) +
+  labs(title = "Average Percentage Contributed to Republicans 
+       by Geographic Category",
        y = "Percentage Contributed to Republicans",
        x = "") +
   coord_flip() +
@@ -377,7 +390,7 @@ geo_calcs %>%
   theme(legend.position = "none")
 ```
 
-```{r}
+```{r include = T, echo = F}
 geo_calcs %>% 
   mutate(mean_per_rep = scales::percent(mean_per_rep, .1),
          low_per_rep = scales::percent(low_per_rep, .1),
@@ -386,10 +399,10 @@ geo_calcs %>%
                caption = "Average Percentage Contributed to Republicans by Geographic Category")
 ```
 
-```{r}
+```{r include = T, echo = F, message = F, warning = F, out.width = "100%", fig.cap = "Wisconsin Counties 2012 percent vote for Scott Walker in the Gubernatorial Recall versus 2012 avergae percent contributed to Republican candidates."}
 donor_geography %>% 
-  group_by(county, walker_per) %>% 
-  summarize(per_rep = mean(per_rep), geo_category) %>% 
+  group_by(county, walker_per, geo_category) %>% 
+  summarize(per_rep = mean(per_rep)) %>% 
   ggplot(aes(walker_per, per_rep)) +
   geom_point(aes(color = geo_category)) +
   scale_color_grey() +
@@ -399,7 +412,7 @@ donor_geography %>%
   labs(title = "WI Counties Vote % for Walker (Republican) & 
        Average % Contributed to Republicans",
        x = "2012 % Vote for Scott Walker for Governor",
-       y = "2020 Average % Contributed to Republicans",
+       y = "2012 Average % Contributed to Republicans",
        color = "Geographic Category") +
   theme_bw()
 ```
@@ -420,7 +433,9 @@ Both large and small donors potentially play a role in the polarization of donor
 In addition, small-dollar donors are playing an increasing role in campaign finance for both Democrats [@albert2020] and Republicans [@lott2019]. Although small-dollar donors were not as prominent in the 2010, 2012, and 2014 state-level elections in Wisconsin as recent national politics, they certainly played a role in the data of this study. Figure 4 shows that 100% partisan donors were on average much small donors than non-100% donors. Previous research into small-dollar donors has asked, "Are Small Donors Polarizing?" and came to the same conclusion as this paper of a more polarized politics as potentially spurring the rise of small-dollar donors and not the other way around [@keena2019].
 
 ## Donor Geography
-Finally, a major theme of polarization studies is the rise of geographic sorting. There has been "an increased concentration of partisan behavior" that emphasizes "a local residential spatial pattern of geographic polarization" [@kinsella2015]. "Partisan migrants" are found to "prefer to relocate in areas populated with copartisans" [@cho2012]. The geography of political polarization in Wisconsin is well-studied by Cramer [-@cramer2016] who uses the term "urban-rural divide" to explain the geographic polarization of the state. This divide that Cramer documents across Wisconsin manifests itself in the geography of polarization among political donors (Figure 5). Bases of strong Democratic support (mostly in urban centers) saw their donors become more Democratic. Conversely, areas that are strong bases of electoral support for Republicans also saw their donors become more Republican. Although the major sources of Democratic and Republican campaign money were once thought to occupy the same geographic area [@bramlett2011], the triumvirate of the rise of small-dollar donors, a decrease in bi-partisan donors across election cycles, and an urban-rural divide with geographic partisan sorting results in a geographic landscape of donor polarization that mirrors the polarization of the populous.
+Finally, a major theme of polarization studies is the rise of geographic sorting. There has been "an increased concentration of partisan behavior" that emphasizes "a local residential spatial pattern of geographic polarization" [@kinsella2015]. "Partisan migrants" are found to "prefer to relocate in areas populated with copartisans" [@cho2012]. The geography of political polarization in Wisconsin is well-studied by Cramer [-@cramer2016] who uses the term "urban-rural divide" to explain the geographic polarization of the state. This divide that Cramer documents across Wisconsin manifests itself in the geography of polarization among political donors (Figure 5). Although past research has suggested that Democratic and Republican campaign contribution come from the same geographic area [@bramlett2011], this paper, shown in Figure 6 and Table 3, find different partisanship in donors in different geographic areas. 
+
+Donors from Madison and Milwaukee are much less Democratic than other urban areas and suburban areas, with rural areas inbetween. Further, the partisanship of donors in a county is highly correlated to the electoral partisanship of the county they are from, as seen in Figure 7. This correlation suggests that the act of donating is becoming more aligned with voting, and that geography is playing an increasing role in politics. 
 
 # Conclusion
 
