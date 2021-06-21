@@ -397,6 +397,9 @@ geo_calcs %>%
          high_per_rep = scales::percent(high_per_rep, .1)) %>% 
   knitr::kable(col.names = c("Geographic Category", "Avg. % to Republicans", "Low Estimate", "High Estimate"),
                caption = "Average Percentage Contributed to Republicans by Geographic Category")
+
+geo_calcs %>% 
+  
 ```
 
 ```{r include = T, echo = F, message = F, warning = F, out.width = "100%", fig.cap = "Wisconsin Counties 2012 percent vote for Scott Walker in the Gubernatorial Recall versus 2012 avergae percent contributed to Republican candidates."}
