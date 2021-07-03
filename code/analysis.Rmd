@@ -54,31 +54,47 @@ library(igraph)
 All data on political contributions came from the Wisconsin Campaign Finance Information System [@cfis]. I exported all contributions to State Assembly, State Senate, and Gubernatorial races from the 2010, 2012, and 2014 elections. This dataset does not include donations to party committees, although it does include disbursements from these committees. I manually created a table of the parties of each of all the campaigns receiving contributions in this timeframe and added the party of the campaign receiving the donation to this dataset.
 
 ```{r}
+# read data
 donations <- readRDS("../data/wi_donations.RDA") %>% 
+# standardize names to lower case and eliminate punctuation
+# make election year a character variable
   mutate(source = str_to_lower(str_replace(source, "[[:punct:]]", " ")),
          election_year =  as.character(election_year)) 
 
+# count the number of donations
 donations_n <- donations %>% 
   count() %>% 
   pull()
 
+# count the number of donations with an anonymous source
 anon_donations_n <- donations %>% 
   filter(str_detect(source, c("unitemized|anonymous")) == T) %>% 
   count() %>% 
   pull()
 
+# filter by donations that are not anonymous
 donations_2 <- donations %>% 
   filter(str_detect(source, c("unitemized|anonymous")) == F) %>% 
+# shorten the zip code
   mutate(zip_5 = str_sub(zip, 1, 5),
+# edit the source and merges approximately equal values
          refined_source = refinr::n_gram_merge(refinr::key_collision_merge(source)),
+# create an identifier with source name and zip code
          refined_source_zip = paste0(refined_source," : ",zip_5)) 
 
+# filter through the non-anonymous data
 filtered_donations <- donations_2 %>% 
+# group by election year and identifier variable
   group_by(election_year, refined_source_zip) %>% 
+# count the number of occurrences of each grouping
   mutate(source_count = n()) %>% 
+# filter by people who made more than one donation
   filter(source_count > 1) %>% 
+# group by election year and target
   group_by(election_year, target) %>% 
+# count the number of donations for each target per year
   mutate(target_count = n()) %>% 
+# filter campaigns over 20 donations
   filter(target_count > 20) %>% 
   ungroup()
 ```
@@ -88,19 +104,31 @@ To clean and analyze my data I used the statistical programming language R [@r; 
 Next, I estimated the partisanship of each donor in each election cycle by taking the percent of donations that each donor gave to Republicans divided by their donations to Republicans and Democrats. I took that "percent donated to Republicans" and rescaled it from -1 to 1, where -1 represents the most Democratic donors, and 1 the most Republican donors. I also calculated each individual's party bin based on the party that they contributed a majority of their money to.
 
 ```{r}
+# create by_donor data frame
 by_donor <- filtered_donations %>% 
+# filtering for only Democrats and Republicans  
   filter(party != "other") %>% 
+# group by election year, unique identifier, and party
   group_by(election_year, refined_source_zip, party) %>% 
+# add up contribution for each person by year and party affiliation
   summarize(contribution = sum(contribution)) %>% 
+# remove grouping
   ungroup() %>% 
+# coalesce data into two columns "dem" and "rep" for each donor
   pivot_wider(names_from = party, 
               values_from = contribution) %>% 
+# replace NA's with 0
   mutate(rep = replace_na(rep, 0),
          dem = replace_na(dem, 0),
+# sum total contributions per donor per year
          total_contributions = rep + dem,
+# calculate fraction of Republican donations
          per_rep = rep / total_contributions,
+# assign a partisanship value based on per_rep value
          partisanship = scales::rescale(per_rep, to = c(-1, 1)),
+# calculate absolute partisanship
          abs_partisanship = abs(partisanship),
+# assign donors to either Democrat or Republican based on their partisanship
          party_bin = case_when(
            per_rep < .5 ~ "democrat",
            #per_rep >= .25 & per_rep <= .75 ~ "bipartisan",
@@ -122,21 +150,33 @@ In this equation $m = \frac{1}{2}\sum_{i}k_{i}$ is equal to the strength of all 
 I calculated the modularity of the network graphs of each election cycle (2010, 2012, 2014) using the `igraph` R package [@igraph]. I used candidates' declared parties and donors' party bin as the groups for the modularity calculation. The modularity of the network graph of each election is in Table 1.
 
 ```{r}
+# a function to calculate modularity
 modularity_calc <- function(year = year){
+# use by_donor data
   nodes_w_party <- by_donor %>% 
+# filter by a specific year
     filter(election_year == year) %>% 
+# extract unique identifier and party columns
     select(refined_source_zip, party_bin) %>% 
+# rename variables
     rename(node = refined_source_zip,
            party = party_bin) %>% 
+# use donations_2 data
     rbind(donations_2 %>% 
+# select for only unique targets and keep party column
             distinct(target, party) %>% 
+# use only Democratic and Republican parties
             filter(party != "other") %>% 
+# rename the target variable to node
             rename(node = target) %>% 
+# assign party
             mutate(party  = case_when(
               party == "rep" ~ "republican",
               party == "dem" ~ "democrat"
             ))) %>% 
+# select for distinct nodes
     distinct(node, party) %>% 
+# assign numbers based on party
     mutate(party_num = case_when(
       party == "democrat" ~ 1,
       party == "bipartisan" ~ 2,
@@ -144,27 +184,36 @@ modularity_calc <- function(year = year){
     ))
   
   filtered_donations %>%
+# filter by year and only Democrats and Republicans
     filter(election_year == year & party != "other") %>% 
+# select the identifier, target, contribution variables
     select(refined_source_zip, target, contribution) %>% 
+# create graph using unique nodes as vertices and donations as edges
     graph_from_data_frame(vertices = nodes_w_party) %>% 
+# calculate modularity
     modularity(nodes_w_party$party_num)
 }
 
 ```
 
 ```{r}
+# extract the different election years
 election_years <- by_donor %>% 
   distinct(election_year) %>% 
   pull()
 ```
 
 ```{r warning = F, message = F}
+# create a table for the election years
 table_1 <- tibble(election_years) %>% 
+# group by each year
   group_by(election_years) %>% 
+# calculate modularity per year
   mutate(modularity = modularity_calc(election_years))
 ```
 
 ```{r include = T, echo = F}
+# round modularity values and output results
 table_1 %>% 
   mutate(modularity = round(modularity, 2)) %>% 
   knitr::kable(col.names = c("Election Cycle", "Modularity"),
@@ -176,6 +225,7 @@ In addition to calculating the change in modularity of each of the election cycl
 I defined a donor's absolute partisanship as the absolute value of their partisanship score (which is on a scale from -1 to 1). Therefore, the larger a donor's absolute the partisanship, the higher percentage of their money that they contributed to a single party. To calculate the significance in the difference of the mean absolute partisanship, I use a bootstrap methodology with 1,000 replications using the `infer` R package [@infer]. This paper uses a non-parametric permutation method because of the non-Normal distribution of partisanship of the donors (`r scales::percent(by_donor %>% summarize(n = n(), partisan_1 = sum(abs_partisanship == 1)) %>% mutate(partisan_1_per = partisan_1 / n) %>% pull(partisan_1_per))` of donors across all election cycles only contribute to a single party). 
 
 ```{r}
+# a function to perform a permutation test
 diff_boostrap <- function(year_1 = "2014",
                           year_2 = "2012",
                           replications = 100) {
@@ -184,14 +234,20 @@ diff_boostrap <- function(year_1 = "2014",
   
   set.seed(1)
   
+# filter by_donor data by desired 2 years
   bootstrap <- by_donor %>% 
     filter(election_year %in% c(year_1, year_2)) %>% 
+# absolute partisanship is the response variable and election year is the explanatory variable
     specify(abs_partisanship ~ election_year) %>% 
+# generate bootstrap samples
     generate(reps = replications, type = "bootstrap") %>% 
+# calculate difference in means
     calculate(stat = "diff in means", order = c(year_1, year_2))
   
+# compute confidence intervals for the difference in means
   bootstrap %>% 
     get_ci() %>% 
+# compute mean for test statistic and get p-value
     cbind(bootstrap %>% 
             summarize(mean_diff = mean(stat))) %>% 
     cbind(bootstrap %>% 
@@ -201,14 +257,17 @@ diff_boostrap <- function(year_1 = "2014",
 
 
 ```{r warning = F, message = F}
+# create a table for all possible pairs of election years
 election_years_expanded <- expand.grid(year1 = as.character(election_years),
-                                       year2 = as.character(election_years)) %>% 
+                                       year2 = as.character(election_years)) %>%
+# filter by only unique adjacent years
   filter(year1 != year2 & 
            as.numeric(year1) > as.numeric(year2) & 
            (as.numeric(year1) - as.numeric(year2) < 2)) %>% 
   ungroup() 
 
 # may run into memory issues with this calculation
+# apply diff_bootstrap function to the two sets of years
 table_2 <- cbind(election_years_expanded, 
                  Map(diff_boostrap, 
                      election_years_expanded$year1, 
@@ -216,10 +275,15 @@ table_2 <- cbind(election_years_expanded,
                      1000) %>% 
                    tibble() %>% 
                    unnest()) %>% 
+# compute and round confidence intervals
   mutate(ci = paste0(round(lower_ci, 5),"-",round(upper_ci, 5)),
+# adjust p-values if zero
          p_value = ifelse(p_value == 0, "<.001", p_value),
+# round the mean differences
          mean_diff = round(mean_diff, 5),
+# modify the strings for the years
          cycle = paste0(year1," compared to ",year2)) %>% 
+# choose relevant columns
   select(cycle, mean_diff, ci, p_value)
 
 
@@ -238,15 +302,20 @@ knitr::include_graphics("../figures/fig1.png")
 ```
 
 ```{r}
+# assign party bins based on fraction of republican donations
 by_donor %>% 
   mutate(party_bin = case_when(
     per_rep < .25 ~ "democrat",
     per_rep >= .25 & per_rep <= .75 ~ "bipartisan",
     per_rep > .75 ~ "republican"
   )) %>% 
+# group by election year and party bin
   group_by(election_year, party_bin) %>%
+# sum observations for each group
   summarize(n = n()) %>% 
+# further group by election year
   group_by(election_year) %>% 
+# compute percent of donations for each group that year
   mutate(percent = scales::percent(n / sum(n), .1),
          n = scales::comma(n)) %>% 
   knitr::kable(col.names = c("Election Cycle", "Party", "Count", "Percentage of Election Cycle"),
@@ -262,38 +331,51 @@ knitr::include_graphics("../figures/fig2.png")
 ```
 
 ```{r}
+# choose only 2010 donors
 donors_2010 <- by_donor %>% 
   filter(election_year == 2010) 
 
+# choose only 2012 donors
 donors_2012 <- by_donor %>% 
   filter(election_year == 2012) 
 
+# choose only 2014 donors
 donors_2014 <- by_donor %>% 
   filter(election_year == 2014)
 
+# find people who donated in 2010 and 2012
 old_2012 <- donors_2012 %>% 
   filter(refined_source_zip %in% donors_2010$refined_source_zip) %>% 
+# count number of people
   count() %>% 
   pull(n)
 
+# find people who donated in 2012 but not in 2010
 new_2012 <- donors_2012 %>% 
   filter(!refined_source_zip %in% donors_2010$refined_source_zip) %>% 
+# count number of people
   count() %>% 
   pull(n)
 
+# find people who donated in 2012 and 2014
 old_2014 <- donors_2014 %>% 
   filter(refined_source_zip %in% donors_2012$refined_source_zip) %>% 
+# count number of people
   count() %>% 
   pull(n)
 
+# find donors in 2014 who did not donate in 2012
 new_2014 <- donors_2014 %>% 
   filter(!refined_source_zip %in% donors_2012$refined_source_zip) %>% 
+# count number of people
   count() %>% 
   pull(n)
 
+# create a table of new and old donors each election year
 tibble(election_year = c("2012", "2014"),
        old_donors = c(old_2012, old_2014),
        new_donors = c(new_2012, new_2014)) %>% 
+# compute percentage of new and old donors
   mutate(old_per = scales::percent(old_donors / (old_donors + new_donors), .1),
          new_per = scales::percent(new_donors / (old_donors + new_donors), .1),
          old_donors = scales::comma(old_donors),
@@ -322,52 +404,78 @@ knitr::include_graphics("../figures/fig5.png")
 ```
 
 ```{r}
+# read data
 recall_results <- read_csv("../data/recall_results.csv") %>% 
+# clean names
   janitor::clean_names() %>% 
+# change county names to lower case
   mutate(county = tolower(county)) %>% 
+# choose county, total votes, votes for Walker, and votes for Barrett
   select(county, total, walker, barrett) %>% 
+# compute percentage of votes for Walker 
   mutate(walker_per = walker / (walker + barrett))
 
+# read data
 zip_to_fip <- read_csv("../data/zip_tp_fip.csv") %>% 
+# clean names
   janitor::clean_names() %>% 
+# convert FIPS and ZIP codes to character type
   mutate(fips = as.character(stcountyfp)) %>% 
   mutate(zip = as.character(zip))
 
+# zip codes for madison and milwaukee
 madison_zips <- c(53703, 53704, 53705, 53706, 53711, 53713, 53714, 53715, 53716, 53717, 53718, 53719, 53726)
 milwaukee_zips <- c(53202, 53203, 53204, 53205, 53206, 53207, 53208, 53209, 53210, 53211, 53212, 53213, 53214, 53215, 53216, 53217, 53218, 53219, 53220, 53221, 53222, 53223, 53224, 53225, 53226, 53227, 53228, 53233)
 
+# read rural-urban continuum codes
 rucc <- readxl::read_excel("../data/ruralurbancodes2013.xls") %>% 
+# clean names
   janitor::clean_names() %>% 
+# filter by only Wisconsin counties
   filter(state == "WI") %>% 
+# assign counties to either Urban, Suburban, or Rural
   mutate(geo_category = case_when(
     rucc_2013 %in% c(1, 2, 3) ~ "2. Urban: Not Madison or Milwaukee",
     rucc_2013 %in% c(4, 6) ~ "3. Suburban", 
     rucc_2013 %in% c(5, 6, 7, 8, 9) ~ "4. Rural")) %>% 
+# left join with all Wisconsin zip codes
   left_join(zip_to_fip) %>% 
+# change county names and assign Madison and Milwaukee ZIP codes to Urban
   mutate(county = tolower(str_replace(county_name, " County", "")),
          geo_category = if_else(zip %in% madison_zips, "1. Urban: Madison & Milwaukee", geo_category),
          geo_category = if_else(zip %in% milwaukee_zips, "1. Urban: Madison & Milwaukee", geo_category)) %>% 
+# left join with recall results
   left_join(recall_results)
 
+# use 2012 donors
 donor_geography <- donors_2012 %>% 
+# extract zip codes from the unique identifier
   mutate(zip = str_sub(refined_source_zip, -5, -1)) %>% 
+# left join with rucc data
   left_join(rucc) %>% 
+# filter for only Wisconsin donors
   filter(state == "WI")
 ```
 
 ```{r}
+# group donor geographic data by category
 geo_calcs <- donor_geography %>% 
   group_by(geo_category) %>% 
+# compute confidence intervals for mean, lower bound, and upper bound of percentage of Republican donations
   summarize(mean_per_rep = Rmisc::CI(per_rep)[2],
             low_per_rep = Rmisc::CI(per_rep)[3],
             high_per_rep = Rmisc::CI(per_rep)[1])
 ```
 
 ```{r}
+# use donor geographic data
 by_county <- donor_geography %>% 
+# group by county, percentage of votes for Walker, and geographic category
   group_by(county, walker_per, geo_category) %>% 
+# compute the mean for each group
   summarize(per_rep = mean(per_rep))
 
+# perform a Pearson product-moment correlation test
 cor_output <- cor.test(by_county$walker_per, by_county$per_rep)
 ```
 
@@ -375,8 +483,10 @@ cor_output <- cor.test(by_county$walker_per, by_county$per_rep)
 Figure 6 shows the partisanship of donors in different geographic categories. Table 3 is a table of the average partisanship of those different geographic categories. Figure 7 is a graph of each county in Wisconsin and the percentage of their vote for the Republican Scott Walker for Governor in 2012 and the average percentage contributed to Republicans in the 2012 cycle. These two measures, electoral and donor partisanship in counties are significantly correlated (_r_ = `r signif(cor_output$estimate, 2)`, _p_ = <.001).
 
 ```{r include = T, echo = F, warning = F, message = F, out.width = "100%", fig.cap = "Average Percentage Contributed to Republican Candidates in Wisconsin in 2012 by Geography."}
+# take geo_calcs data and reverse the order of the factor levels
 geo_calcs %>% 
   mutate(geo_category = fct_rev(geo_category)) %>% 
+# plot results
   ggplot(aes(geo_category, y = mean_per_rep, ymin = low_per_rep, ymax = high_per_rep, color = geo_category)) +
   geom_pointrange(size = 1.05) +
   scale_color_grey() +
@@ -391,6 +501,7 @@ geo_calcs %>%
 ```
 
 ```{r include = T, echo = F}
+# compute percent of donations to Republicans with upper and lower bounds
 geo_calcs %>% 
   mutate(mean_per_rep = scales::percent(mean_per_rep, .1),
          low_per_rep = scales::percent(low_per_rep, .1),
@@ -398,14 +509,15 @@ geo_calcs %>%
   knitr::kable(col.names = c("Geographic Category", "Avg. % to Republicans", "Low Estimate", "High Estimate"),
                caption = "Average Percentage Contributed to Republicans by Geographic Category")
 
-geo_calcs %>% 
-  
 ```
 
 ```{r include = T, echo = F, message = F, warning = F, out.width = "100%", fig.cap = "Wisconsin Counties 2012 percent vote for Scott Walker in the Gubernatorial Recall versus 2012 avergae percent contributed to Republican candidates."}
+# group donor geography data by county, votes to Walker, and geographic category
 donor_geography %>% 
   group_by(county, walker_per, geo_category) %>% 
+# compute mean percent of Republican votes for each group
   summarize(per_rep = mean(per_rep)) %>% 
+# plot results
   ggplot(aes(walker_per, per_rep)) +
   geom_point(aes(color = geo_category)) +
   scale_color_grey() +
@@ -451,5 +563,4 @@ wordcountaddin:::text_stats()
 ```
 
 # References
-
 
