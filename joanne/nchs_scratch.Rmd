@@ -1,0 +1,304 @@
+---
+output:
+  pdf_document:
+    # citation_package: biblatex
+    keep_tex: true
+    fig_caption: true
+    latex_engine: pdflatex
+    template: ../svm-latex-ms.tex
+title:
+thanks: 
+author:
+- name:
+affiliation: 
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+geometry: margin=1in
+fontfamily: mathpazo
+fontsize: 10pt
+spacing: double
+bibliography: ../bibliography.bib
+biblio-style: apsr
+header-includes: \usepackage{graphicx}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(include = FALSE)
+library(tidyverse)
+library(infer)
+library(igraph)
+library(maps)
+
+load("misc_data.Rdata")
+```
+
+```{r}
+zip_to_fip <- read_csv("../data/zip_tp_fip.csv") %>% 
+  janitor::clean_names() %>% 
+  mutate(fips = as.character(stcountyfp)) %>% 
+  mutate(zip = as.character(zip))
+
+recall_results <- read_csv("../data/recall_results.csv") %>% 
+  janitor::clean_names() %>% 
+  mutate(county = tolower(county)) %>% 
+  select(county, total, walker, barrett) %>% 
+  mutate(walker_per = walker / (walker + barrett))
+
+nchs <- read.csv("NCHSURCodes2013.csv") %>% 
+  janitor::clean_names() %>%
+  rename("state" = "state_abr",
+         "countyname" = "county_name",
+         "nchs_2013" = "x2013_code",
+         "fips" = "fips_code") %>% 
+  filter(state == "WI") %>% 
+  mutate(fips = as.character(fips)) %>% 
+  left_join(zip_to_fip) %>% 
+  mutate(county = tolower(str_replace(countyname, " County", ""))) %>% 
+  left_join(recall_results)
+```
+
+```{r}
+donors_nchs <- by_donor %>%
+  mutate(zip = str_sub(refined_source_zip, -5, -1)) %>% 
+  left_join(nchs) %>% 
+  filter(state == "WI") %>% 
+  mutate(geo_category = case_when(
+    nchs_2013 == 1 ~ "1. Large Central Metro",
+    nchs_2013 == 2 ~ "2. Large Fringe Metro",
+    nchs_2013 == 3 ~ "3. Medium Metro", 
+    nchs_2013 == 4 ~ "4. Small Metro",
+    nchs_2013 == 5 ~ "5. Micropolitan",
+    nchs_2013 == 6 ~ "6. Noncore")) %>% 
+  mutate(geo_category = ifelse(county == "dane" | county == "milwaukee", "1. Milwaukee/Dane Counties", geo_category))
+```
+
+```{r}
+geo_bootstrap <- function(year_1 = "2014",
+                          year_2 = "2012",
+                          replications = 100,
+                          party = "Both",
+                          donor_data = donors_nchs) {
+  year_1 <- as.character(year_1)
+  year_2 <- as.character(year_2)
+  
+  set.seed(1)
+
+  table <- tibble()
+ 
+  for(category in levels(factor(donor_data$geo_category)))  {
+      bootstrap <- donor_data %>% 
+      filter(election_year %in% c(year_1, year_2)) %>% 
+        {if(party != "Both") filter(., party_bin == party) else .} %>% 
+      filter(geo_category == category) %>%
+      specify(abs_partisanship ~ election_year) %>% 
+      generate(reps = replications, type = "bootstrap") %>% 
+      calculate(stat = "diff in means", order = c(year_1, year_2))
+  
+    table <- rbind(table,
+                   cbind(`Geographic Category` = category, Party = party,
+    bootstrap %>% 
+      get_ci() %>% 
+     cbind(bootstrap %>% 
+              summarize(mean_diff = mean(stat))) %>% 
+      cbind(bootstrap %>% 
+             get_p_value(obs_stat = 0, direction = "two_sided"))) %>%
+       tibble())
+  }
+  table
+}
+```
+
+
+```{r include = T, echo = F}
+nchs_stats <- donors_nchs %>% 
+  group_by(election_year, geo_category, party_bin) %>% 
+  filter(party_bin %in% c("democrat", "republican")) %>% 
+  summarise(total = n()) %>% 
+  pivot_wider(names_from = "party_bin", values_from = "total") %>% 
+  left_join(donors_nchs%>% 
+              filter(party_bin %in% c("democrat", "republican")) %>% 
+              group_by(election_year, geo_category) %>% 
+              summarise(Democrat_per = sum(dem) / sum(total_contributions),
+                        Republican_per = sum(rep) / sum(total_contributions))) %>% 
+  left_join(donors_nchs %>% 
+  group_by(election_year, geo_category, party_bin) %>% 
+  filter(party_bin %in% c("democrat", "republican")) %>% 
+  summarise(total = n()) %>% 
+  left_join(donors_nchs %>% 
+  filter(party_bin %in% c("democrat", "republican")) %>% 
+  group_by(election_year, party_bin) %>% 
+  summarise(year_total = n())) %>% 
+  mutate(percent = total / year_total) %>% 
+  select(-c(total, year_total)) %>% 
+  pivot_wider(names_from = "party_bin", values_from = "percent") %>% 
+  rename("yearly_dem" = "democrat",
+         "yearly_rep" = "republican"))
+
+nchs_stats %>%
+  knitr::kable(col.names = c("Election Year", "Geographic Cateogry", "Democratic Donors", "Republican Donors", "% Dem donations","% Rep donations", "% of yearly Dem donors", "% of yearly Rep donors"),
+               caption = "Number of Donors, Proportion of Donations, and Percentage of Donors from each Geographic Category per Year")
+```
+
+
+```{r include = T, echo = F}
+nchs_stats %>% 
+  pivot_longer(c(democrat, republican), names_to = "Party", values_to = "num_donors") %>% 
+  ggplot(aes(x = Party, y = num_donors, fill = geo_category)) + geom_bar(position = "stack", stat = "identity") +
+  facet_wrap(~election_year) +
+  labs(title = "Number of Donors from each Geographic Cateogory", x = "Party", y = "Number of Donors", fill = "Geographic Category") + 
+  scale_fill_manual(values = c("grey1","grey20","grey30","grey40","grey60","grey85"))+
+  theme_bw() +
+  theme(panel.grid.major.x = element_blank())
+
+```
+
+```{r include = T, echo = F}
+nchs_stats %>% 
+  select(-c(democrat, republican)) %>% 
+  rename("Democrat" = "yearly_dem",
+         "Republican" = "yearly_rep") %>% 
+  pivot_longer(c(Democrat, Republican), names_to = "party_percent", values_to = "yearly_percent") %>% 
+  ggplot(aes(x = election_year, y = yearly_percent, group = geo_category, fill = geo_category)) +
+    scale_fill_manual(values = c("grey1","grey20","grey30","grey40","grey60","grey85"))+ 
+  geom_bar(position = "fill", stat = "identity") + 
+  facet_grid(~party_percent) + 
+  labs(title = "Proportion of Donors from each Geographic Cateogory", x = "Election Year", y = "Proportion of Donors", fill = "Geographic Category") +
+  theme_bw()
+```
+
+```{r include = T, echo = F}
+wi_counties <- map_data("county", "wisconsin") %>% 
+  select(lon = long, lat, group, county = subregion) %>% 
+  mutate(county = str_replace(county, "st croix", "st. croix")) %>% 
+  left_join(donors_nchs)
+
+wi_counties %>% 
+  ggplot(aes(lon, lat, group = group), color = wi_counties$geo_category) +
+  geom_polygon(aes(fill = wi_counties$geo_category), colour = "black") + 
+  coord_quickmap() +
+  coord_fixed(1.3) + 
+  labs(title = "Wisconsin Counties by Geographic Category", x = "", y = "") +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = .5),
+        axis.line = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank()) +
+  theme(legend.title = element_blank()) +
+  scale_fill_manual(values = c("grey1","grey20","grey30","grey40","grey60","grey85"))
+
+ggsave("geo_map.png")
+```
+
+```{r include = T, warning = F, echo = F, message = F}
+nchs_geo <- geo_bootstrap(2012, 2010, 1000, donor_data = donors_nchs) %>% 
+  mutate(cycle = "2012 compared to 2010") %>% 
+  rbind(geo_bootstrap(2014, 2012, 1000, donor_data = donors_nchs) %>% 
+  mutate(cycle = "2014 compared to 2012")) %>% 
+  mutate(ci = paste0(round(lower_ci, 5),"-",round(upper_ci, 5)),
+         mean_diff = round(mean_diff, 5)) %>% 
+  select(`Geographic Category`, cycle, mean_diff, ci, p_value)
+
+nchs_geo %>%
+  mutate(adjusted_p = p.adjust(p_value, method = "bonferroni", length(p_value)),
+         p_value = ifelse(p_value == 0, "<.001", p_value),
+         adjusted_p = ifelse(adjusted_p == 0, "<.001", adjusted_p)) %>% 
+  knitr::kable(col.names = c("Geographic Category", "Election Year", "Diff.", "CI", "p", "Adjusted p"),
+               caption = "Bootstrapped difference-in-means test with 1,000 replications comparing mean partisanship by geographic category.")
+```
+
+```{r include = T, warning = F, echo = F, message = F}
+nchs_geo_party <- geo_bootstrap(2012,2010, 1000, "democrat", donors_nchs) %>% 
+  mutate(cycle = "2012 compared to 2010") %>% 
+  rbind(geo_bootstrap(2014,2012, 1000, "democrat", donors_nchs) %>% 
+  mutate(cycle = "2014 compared to 2012")) %>% 
+  rbind(geo_bootstrap(2012,2010, 1000, "republican", donors_nchs) %>% 
+  mutate(cycle = "2012 compared to 2010")) %>% 
+  rbind(geo_bootstrap(2014,2012, 1000, "republican", donors_nchs) %>% 
+  mutate(cycle = "2014 compared to 2012"))
+  
+
+nchs_geo_party %>%
+  mutate(ci = paste0(round(lower_ci, 5),"-",round(upper_ci, 5)),
+         mean_diff = round(mean_diff, 5),
+         adjusted_p = p.adjust(p_value, method = "bonferroni", length(p_value)),
+         p_value = ifelse(p_value == 0, "<.001", p_value),
+         adjusted_p = ifelse(adjusted_p == 0, "<.001", adjusted_p)) %>% 
+  select(`Geographic Category`, Party, cycle, mean_diff, ci, p_value, adjusted_p) %>% 
+  knitr::kable(col.names = c("Geographic Category", "Party", "Election Year", "Diff.", "CI", "p", "Adjusted p"),
+               caption = "Bootstrapped difference-in-means test with 1,000 replications comparing mean partisanship by geographic category.")
+```
+
+
+```{r}
+nchs_party_stats <- nchs_geo_party %>% 
+  left_join(rbind(donors_nchs %>% 
+    mutate(indicator = ifelse(election_year %in% c(2012,2010), "yes", "no"),
+           cycle = "2012 compared to 2010") %>%
+    filter(indicator == "yes") %>% 
+    group_by(geo_category, indicator, cycle, party_bin) %>% 
+    summarize(count= n()),
+  donors_nchs %>% 
+    mutate(indicator = ifelse(election_year %in% c(2014,2012), "yes", "no"),
+           cycle = "2014 compared to 2012") %>%
+    filter(indicator == "yes") %>% 
+    group_by(geo_category, indicator, cycle, party_bin) %>% 
+    summarize(count= n())) %>% 
+  ungroup() %>% 
+  select(-indicator),
+    by = c("Geographic Category" = "geo_category", "cycle" = "cycle", "Party" = "party_bin")) %>% 
+  
+  mutate(index = rep(c(rep(2,6), rep(1,6)), 2),
+         lower = lower_ci,
+         upper = upper_ci)
+```
+
+``` {r include = T, echo = F}
+ggplot(data = nchs_party_stats, aes(y = index, x = mean_diff, xmin = lower, xmax = upper, color = Party)) +
+  facet_wrap(~`Geographic Category`) +
+  geom_vline(xintercept = 0, color = 'black', linetype = 'dashed', alpha = .5) +
+  scale_color_manual(values=c("blue", "red")) + 
+  geom_pointrange(aes(size = count), position = position_dodge(width = .2)) +
+  scale_y_continuous(name = "", breaks=c(1,2), limits=c(.5,2.5), expand= c(0,0), labels = c("2014 compared\nto 2012", "2012 compared\nto 2010")) +
+  labs(title = "Difference in Mean Partisanship by Geographic Category and Party",
+       x = "Difference in Means") +
+  theme(plot.title = element_text(hjust = .5)) + 
+  scale_size(range=c(.05, .55)) + 
+  theme_bw() + 
+  theme(panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank())
+
+ggsave("partisanship_geo.png")
+```
+
+```{r}
+census <- read.csv("wisconsin_census.csv") %>% 
+  janitor::clean_names() %>% 
+  mutate(per_white_2010 = as.numeric(gsub("%","",percent_white_alone_census_2010))) %>% 
+  rename(countyname = co_name)
+```
+
+```{r include = T, echo = F}
+wi_counties %>% 
+  left_join(census) %>% 
+  ggplot(aes(lon, lat, group = group), color = per_white_2010) +
+  geom_polygon(aes(fill = per_white_2010), colour = "black") + 
+  coord_quickmap() +
+  coord_fixed(1.3) + 
+  labs(title = "Wisconsin Counties by Geographic Category", x = "", y = "") +
+  theme(plot.title = element_text(hjust = .5),
+        axis.line = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank()) +
+  theme(legend.title = element_blank()) +
+  theme_classic()+
+  scale_fill_gradient2()
+
+```
+
+```{r}
+save(nchs_stats, nchs_geo, nchs_geo_party, file = "data_by_geography.Rdata")
+```
+
+
+
